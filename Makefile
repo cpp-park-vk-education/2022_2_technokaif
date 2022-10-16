@@ -1,18 +1,18 @@
-.PHONY: all build rebuild check test testextra memtest memtestextra clean
+.PHONY: all build rebuild check memtest clean
 
-all: clean check build test memtest testextra memtestextra
+all: clean check build memtest
 
 clean:
-	rm -rf build
+	rm -rf ./server/build
+	rm valgrind.log
+
+check:
+	./scripts/linters/run.sh
 
 build:
 	./build.sh
 
 rebuild: clean build
 
-check:
-	./scripts/linters/run.sh
-
-#test:
-#	./build.sh -DWITH_MEMCHECK=ON
-#	./scripts/valgrind.sh --memcheck
+memtest:
+	./scripts/valgrind.sh ./server/build/server --memcheck
