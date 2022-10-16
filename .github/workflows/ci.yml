@@ -9,7 +9,7 @@ jobs:
       - run: make check
   build:
     runs-on: ubuntu-latest
-    container: ibmcom/cmake-ppc64le
+    container: gromacs/cmake-3.13.0-llvm-8-tsan-master
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
