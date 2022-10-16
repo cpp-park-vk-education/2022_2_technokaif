@@ -9,7 +9,7 @@ jobs:
       - run: make check
   build:
     runs-on: ubuntu-latest
-    container: kitware/cmake
+    container: ibmcom/cmake-ppc64le
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
