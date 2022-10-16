@@ -20,7 +20,7 @@ jobs:
         path: server
   memtest:
     runs-on: ubuntu-latest
-    container: leshiy1295/gcc_linters
+    container: karek/valgrind
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
