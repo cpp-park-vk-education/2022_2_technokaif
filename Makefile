@@ -4,7 +4,6 @@ all: clean check build memtest
 
 clean:
 	rm -rf ./server/build
-	rm valgrind.log
 
 check:
 	./scripts/linters/run.sh
