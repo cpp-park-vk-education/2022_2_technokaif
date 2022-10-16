@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
+cd server
 mkdir build
-cd build 
-cmake ../server
+cd build
+cmake ..
 cmake --build .
