@@ -9,7 +9,7 @@ jobs:
       - run: make check
   build:
     runs-on: ubuntu-latest
-    container: leshiy1295/gcc_linters
+    container: kitware/cmake
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
