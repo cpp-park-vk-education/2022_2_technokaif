@@ -9,7 +9,7 @@ jobs:
       - run: make check
   build:
     runs-on: ubuntu-latest
-    container: gromacs/cmake-3.13.0-llvm-8-tsan-master
+    container: kubaj/cmake-valgrind
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
@@ -20,7 +20,7 @@ jobs:
         path: server
   memtest:
     runs-on: ubuntu-latest
-    container: karek/valgrind
+    container: kubaj/cmake-valgrind
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
