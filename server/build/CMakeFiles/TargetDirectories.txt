@@ -1,0 +1,12 @@
+/home/stepan/2022_2_technokaif/server/build/CMakeFiles/server.dir
+/home/stepan/2022_2_technokaif/server/build/CMakeFiles/test.dir
+/home/stepan/2022_2_technokaif/server/build/CMakeFiles/edit_cache.dir
+/home/stepan/2022_2_technokaif/server/build/CMakeFiles/rebuild_cache.dir
+/home/stepan/2022_2_technokaif/server/build/logic/CMakeFiles/logic.dir
+/home/stepan/2022_2_technokaif/server/build/logic/CMakeFiles/test.dir
+/home/stepan/2022_2_technokaif/server/build/logic/CMakeFiles/edit_cache.dir
+/home/stepan/2022_2_technokaif/server/build/logic/CMakeFiles/rebuild_cache.dir
+/home/stepan/2022_2_technokaif/server/build/tests/CMakeFiles/test_logic.dir
+/home/stepan/2022_2_technokaif/server/build/tests/CMakeFiles/test.dir
+/home/stepan/2022_2_technokaif/server/build/tests/CMakeFiles/edit_cache.dir
+/home/stepan/2022_2_technokaif/server/build/tests/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Werror  -coverage -lgcov CMakeFiles/server.dir/main.cpp.o -o server  logic/liblogic.a 

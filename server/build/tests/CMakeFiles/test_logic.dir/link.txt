@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Werror -fprofile-arcs -ftest-coverage -O0  -coverage -lgcov -coverage -lgcov CMakeFiles/test_logic.dir/test.cpp.o -o test_logic  ../logic/liblogic.a /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a 

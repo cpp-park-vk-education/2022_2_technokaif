@@ -1,0 +1,21 @@
+version: '3'
+
+# To start: 
+# - docker-compose up
+# To finish:
+# - docker stop $(docker ps -a -q)
+# - docker rm $(docker ps -a -q) && docker volume prune -f
+
+services:
+
+  db:
+    image: postgres:14.4
+    restart: always
+    environment:
+      POSTGRES_DB: rabbit_hole_db
+      POSTGRES_USER: technokaif
+      POSTGRES_PASSWORD: love
+    ports:
+      - 5432:5432
+    volumes:
+      - ./_sql/:/docker-entrypoint-initdb.d
