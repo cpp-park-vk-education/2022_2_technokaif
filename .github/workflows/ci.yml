@@ -24,4 +24,6 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
-      - run: make memtest
+      - run: |
+          apt install -y lcov
+          make memtest 
