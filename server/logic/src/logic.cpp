@@ -1,8 +1,8 @@
 #include "logic.hpp"
 
-int fact(int n) {
-    if (n <= 1) {
+int fact(int num) {
+    if (num <= 1) {
         return 1;
     }
-    return fact(n - 1) * n;
+    return fact(num - 1) * num;
 }

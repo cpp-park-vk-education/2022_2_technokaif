@@ -1,3 +1,3 @@
 #pragma once 
 
-int fact(int n);
+int fact(int num);
