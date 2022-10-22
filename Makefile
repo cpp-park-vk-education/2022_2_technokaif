@@ -9,9 +9,15 @@ check:
 	./scripts/linters/run.sh
 
 build:
-	./build.sh
+	./build.sh -DMEMCHECK=OFF
 
 rebuild: clean build
 
+test:
+	./build.sh -DMEMCHECK=OFF
+	./tests.sh
+
 memtest:
-	./scripts/valgrind.sh ./server/build/server --memcheck
+	./build.sh -DMEMCHECK=ON
+	./tests.sh
+	

@@ -15,4 +15,5 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
 # target_include_directories(${PROJECT_NAME} PUBLIC ${LOGIC_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LOGIC_LIBRARIES})
 
-#add_subdirectory(tests)
+enable_testing()
+add_subdirectory(tests)

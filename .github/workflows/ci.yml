@@ -24,4 +24,4 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
-      - run: make build memtest
+      - run: make memtest
