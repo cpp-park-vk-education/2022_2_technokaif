@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 project(server)
 
+SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+
 add_subdirectory(logic)
 
 message("LOGIC_INCLUDE_DIRS = ${LOGIC_INCLUDE_DIRS}")

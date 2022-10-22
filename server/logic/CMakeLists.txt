@@ -1,5 +1,5 @@
 project(logic)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fprofile-arcs -ftest-coverage -fPIC -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fPIC -O0")
 
 file(GLOB SOURCES src/*)
 file(GLOB INCLUDE_DIRS include)

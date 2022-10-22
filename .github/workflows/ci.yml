@@ -3,13 +3,13 @@ on: workflow_dispatch
 jobs:
   check:
     runs-on: ubuntu-latest
-    container: leshiy1295/gcc_linters
+    container: leshiy1295/gcc_linters_valgrind_cmake_gtest
     steps:
       - uses: actions/checkout@v2 
       - run: make check
   build:
     runs-on: ubuntu-latest
-    container: gromacs/cmake-3.13.0-llvm-8-tsan-master
+    container: leshiy1295/gcc_linters_valgrind_cmake_gtest
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
@@ -20,7 +20,7 @@ jobs:
         path: server
   memtest:
     runs-on: ubuntu-latest
-    container: gromacs/cmake-3.13.0-llvm-8-tsan-master
+    container: leshiy1295/gcc_linters_valgrind_cmake_gtest
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
