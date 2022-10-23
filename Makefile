@@ -3,7 +3,7 @@
 all: clean check build memtest
 
 clean:
-	rm -rf ./server/build
+	rm -rf */build
 
 check:
 	./scripts/linters/run.sh
@@ -20,4 +20,3 @@ test:
 memtest:
 	./scripts/build.sh -DMEMCHECK=ON
 	./scripts/tests.sh
-	
