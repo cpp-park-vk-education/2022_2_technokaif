@@ -1,5 +1,6 @@
 # Cmake
 */build
+*/**/build
 
 # Executables
 *.exe
