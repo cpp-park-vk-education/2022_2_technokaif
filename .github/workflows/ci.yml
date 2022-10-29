@@ -3,16 +3,14 @@ on: push
 jobs:
   check:
     runs-on: ubuntu-latest
-    # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
+    container: stepanpopov/rabbit_hole
     steps:
       - uses: actions/checkout@v2 
-      - run: |
-          docker build . -t app
-          docker -it -v $PWD:/home app cd home & make check
+      - run: make check
 
   build:
     runs-on: ubuntu-latest
-    # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
+    container: stepanpopov/rabbit_hole
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
@@ -24,7 +22,7 @@ jobs:
 
   memtest:
     runs-on: ubuntu-latest
-    # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
+    container: stepanpopov/rabbit_hole
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
