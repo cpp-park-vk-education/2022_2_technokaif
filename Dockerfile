@@ -1,4 +1,4 @@
-FROM g++:latest
+FROM gcc:latest
 RUN apt update -y && \
     apt install -y cppcheck clang-tidy python3-pip libc6-dbg cmake libgtest-dev lcov
 RUN pip install cpplint

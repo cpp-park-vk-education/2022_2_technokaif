@@ -4,18 +4,15 @@ jobs:
   check:
     runs-on: ubuntu-latest
     # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
-    runs:
-      using: 'docker'
-      image: 'Dockerfile'
     steps:
       - uses: actions/checkout@v2 
-      - run: make check
+      - run: |
+          docker build . -t app
+          docker -it -v $PWD:/home app cd home & make check
+
   build:
     runs-on: ubuntu-latest
     # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
-    runs:
-      using: 'docker'
-      image: 'Dockerfile'
     needs: [check]
     steps:
     - uses: actions/checkout@v2 
@@ -24,12 +21,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: server
+
   memtest:
     runs-on: ubuntu-latest
     # container: leshiy1295/gcc_linters_valgrind_cmake_gtest
-    runs:
-      using: 'docker'
-      image: 'Dockerfile'
     needs: [build]
     steps:
       - uses: actions/checkout@v2 
