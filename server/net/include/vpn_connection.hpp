@@ -24,11 +24,14 @@ public:
 private:
     void readMsg();
 
+    void handleRead(boost_error &error, size_t bytes);
+
+    void handleMsg(IHandler *handler);
+
     void sendReply(ip::tcp::socket &destination);
 
-    void handleMsg(boost_error &error, size_t bytes, IHandler *handler);
-
     void connection_close();
+
 
     OVPNRunner runner;
     char read_buff[BUFF_SIZE];

@@ -17,7 +17,7 @@ private:
 
     io_context &io_context;
     ip::tcp::acceptor acceptor;
-    size_t connections = 0;
+    static size_t connections = 0;
     // Client::clients_map clients;
     // steady_timer timer;
 };
