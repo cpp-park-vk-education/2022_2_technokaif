@@ -17,14 +17,13 @@ ip::tcp::socket &VpnConnection::getSocket() {
 }
 
 void VpnConnection::readMsg() {
-
     std::fill(read_buff, read_buff + sizeof(read_buff), 0);
     socket_.async_read_some(buffer(read_buff, sizeof(read_buff)), IO_BIND(handleRead));
 }
 
 void VpnConnection::handleRead(boost_error &error, size_t bytes) {
     // TODO обработка ошибок
-    IHandler *handler = new IHandler(runner);
+    Handler *handler = new Handler(runner);
     handlerMsg(handler);
 }
 
