@@ -4,6 +4,7 @@
 #include <fstream>
 #include <boost/asio.hpp>
 
+const int BUFF_SIZE = 512;
 
 class Config {
 public:
@@ -22,8 +23,7 @@ private:
 
 class IHandler {
 public:
-    virtual ~IHandler() = 0;
-    virtual void handle(boost::asio::const_buffer ) = 0;
+    virtual void handle(char[BUFF_SIZE] ) = 0;
     virtual Config reply() = 0;
 };
 
@@ -71,13 +71,13 @@ private:
 class VpnMsgHandler : public IHandler {
 public:
     VpnMsgHandler(OVPNRunner& runner) : ovpnRunner(runner) { }
-    void handle(boost::asio::const_buffer ) override;
+    void handle(char[BUFF_SIZE] ) override;
     Config reply();
 
 private:
-    void inputAnalyze(boost::asio::const_buffer );
+    void inputAnalyze(char[BUFF_SIZE] );
 
-    VPNContext convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg);
+    VPNContext convertVpnMsgToVpnContext(char vpnMsg[]);
     std::vector<OptionalUrl> convertVpnContextToVpnList(const VPNContext& );
     void setVpnContext(const VPNContext& );
     void setVpnMode(const VPNMode& );

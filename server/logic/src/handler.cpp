@@ -87,7 +87,7 @@ Config OVPNRunner::GetServerConfig() {
     return serverConfig;
 }
 
-void VpnMsgHandler::handle(boost::asio::const_buffer msgBuffer) {
+void VpnMsgHandler::handle(char* msgBuffer) {
     // TODO: хэндлер, принимающий буффер с url в виде бит с сервера
 
     inputAnalyze(msgBuffer);
@@ -99,7 +99,7 @@ Config VpnMsgHandler::reply() {
     return ovpnRunner.GetClientConfig();
 }
 
-void VpnMsgHandler::inputAnalyze(boost::asio::const_buffer msgBuffer) {
+void VpnMsgHandler::inputAnalyze(char msgBuffer[BUFF_SIZE]) {
     // TODO: разработка входных данных на сервер
 
     vpnContext = convertVpnMsgToVpnContext(msgBuffer);
@@ -117,10 +117,11 @@ void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl>& vpnList_) {
     vpnList = vpnList_;
 }
 
-VPNContext VpnMsgHandler::convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg) {
+VPNContext VpnMsgHandler::convertVpnMsgToVpnContext(char vpnMsg[BUFF_SIZE]) {
     // TODO: метод конвертации буфера с сервера в VPNContext
 
-    vpnMsg.data();
+    VPNContext vpnContext;
+    vpnContext.urlList.push_back(std::string(vpnMsg));
     return VPNContext();
 }
 
