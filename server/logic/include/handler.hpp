@@ -1,5 +1,4 @@
 #include "tools.h"
-#include <iostream>
 #include <fstream>
 #include <boost/asio.hpp>
 
@@ -23,9 +22,6 @@ public:
     virtual ~IHandler() = 0;
     virtual void handle(boost::asio::const_buffer ) = 0;
     virtual Config reply() = 0;
-
-private:
-    boost::asio::const_buffer msg;
 };
 
 class UrlToIpConverter {
@@ -42,28 +38,36 @@ private:
 };
 
 class MakeConfigurationFiles {
-    MakeConfigurationFiles(VPNMode , std::vector<OptionalUrl> );
-    Config MakeServerConfig(VPNMode );
-    Config MakeClientConfig(VPNMode );
+public:
+    MakeConfigurationFiles(VPNMode vpnMode_, std::vector<OptionalUrl> optionalUrlList_)
+            : vpnMode(vpnMode_), optionalUrlList(optionalUrlList_) { }
+    Config MakeServerConfig();
+    Config MakeClientConfig();
+
+private:
+    VPNMode vpnMode;
+    std::vector<OptionalUrl> optionalUrlList;
 };
 
 class OVPNRunner {
 public:
-    MakeConfigurationFiles* confFilesMaker;
+    OVPNRunner();
     
     void RunOpenVPNServer();
     void StopOpenVPNServer();
 
     Config GetClientConfig();
+    Config GetServerConfig();
 
 private:
+    MakeConfigurationFiles* confFilesMaker;
     Config serverConfig;
     Config clientConfig;
 };
 
 class VpnMsgHandler : public IHandler {
 public:
-    VpnMsgHandler();
+    VpnMsgHandler(OVPNRunner& runner) : ovpnRunner(runner) { }
     void handle(boost::asio::const_buffer ) override;
     Config reply();
 
@@ -72,13 +76,14 @@ private:
 
     VPNContext convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg);
     std::vector<OptionalUrl> convertVpnContextToVpnList(const VPNContext& );
-    void setVpnContext(const VPNContext& ) {}
-    void setVpnMode(const VPNMode& ) {}
-    void setVpnList(const std::vector<OptionalUrl>& ) {}
-    
+    void setVpnContext(const VPNContext& );
+    void setVpnMode(const VPNMode& );
+    void setVpnList(const std::vector<OptionalUrl>& );
+
 private:
     VPNMode vpnMode;
+    VPNContext vpnContext;
     std::vector<OptionalUrl> vpnList;
     UrlToIpConverter* urlConverter;
-    OVPNRunner* ovpnRunner;
+    OVPNRunner& ovpnRunner;
 };
