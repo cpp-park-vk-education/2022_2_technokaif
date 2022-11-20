@@ -1,5 +1,18 @@
 #pragma once
 
+#include <string>
+
+#include <boost/asio.hpp>
+#include <boost/chrono.hpp>
+// #include <boost/system.hpp>
+#include <boost/bind/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/enable_shared_from_this.hpp>
+
+using namespace boost::asio;
+
+typedef const boost::system::error_code boost_error;
 // #include <sys/types.h>
 // #include "utils.hpp"
 
@@ -17,8 +30,8 @@ public:
 
     ip::tcp::socket &getSocket();
 
-    static boost::shared_ptr <VpnConnection> create(io_context &io_context_) {
-        return ptr(new VpnConnection(io_context_));
+    static boost::shared_ptr<VpnConnection> create(io_context &io_context_) {
+        return boost::shared_ptr<VpnConnection>(new VpnConnection(io_context_));
     }
 
 private:
@@ -31,7 +44,6 @@ private:
     void sendReply(ip::tcp::socket &destination);
 
     void connection_close();
-
 
     OVPNRunner runner;
     char read_buff[BUFF_SIZE];
