@@ -4,13 +4,13 @@
 #include <boost/asio.hpp>
 
 struct OptionalUrl {
-    std:: string url;
+    std::string url;
     std::vector<std::string> ipList;
 };
 
 class Config {
 public:
-    Config(const std::string& fileName = "client.cfg");
+    explicit Config(const std::string& fileName = "client.cfg");
     void write(const std::string& buffer);
     std::string& read();
 
@@ -21,8 +21,8 @@ private:
 class IHandler {
 public:
     virtual ~IHandler() = 0;
-    virtual void handle(boost::asio::const_buffer );
-    void reply();
+    virtual void handle(boost::asio::const_buffer ) = 0;
+    virtual Config reply() = 0;
 
 private:
     boost::asio::const_buffer msg;
@@ -30,6 +30,7 @@ private:
 
 class UrlToIpConverter {
 public:
+    explicit UrlToIpConverter(VPNContext );
     void runConvert();
     std::vector<OptionalUrl> getOptionalUrlList();
 
@@ -42,8 +43,8 @@ private:
 
 class MakeConfigurationFiles {
     MakeConfigurationFiles(VPNMode , std::vector<OptionalUrl> );
-    virtual Config MakeServerConfig(VPNMode ) = 0;
-    virtual Config MakeClientConfig(VPNMode ) = 0;
+    Config MakeServerConfig(VPNMode );
+    Config MakeClientConfig(VPNMode );
 };
 
 class OVPNRunner {
@@ -56,24 +57,24 @@ public:
     Config GetClientConfig();
 
 private:
-    Config ServerConfig;
-    Config ClientConfig;
+    Config serverConfig;
+    Config clientConfig;
 };
 
 class VpnMsgHandler : public IHandler {
 public:
+    VpnMsgHandler();
     void handle(boost::asio::const_buffer ) override;
     Config reply();
 
 private:
     void inputAnalyze();
 
-    VPNContext fromVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg);
+    VPNContext convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg);
+    std::vector<OptionalUrl> convertVpnContextToVpnList(const VPNContext& );
     void setVpnContext(const VPNContext& ) {}
     void setVpnMode(const VPNMode& ) {}
     void setVpnList(const std::vector<OptionalUrl>& ) {}
-
-    std::vector<OptionalUrl> convertVpnContextToVpnList(const VPNContext& );
     
 private:
     VPNMode vpnMode;
