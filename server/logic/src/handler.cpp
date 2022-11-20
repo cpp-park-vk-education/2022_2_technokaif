@@ -1,11 +1,28 @@
 #include <handler.hpp>
 
-Config::Config(const std::string& fileName = "client.cfg") {
-    // TODO: конструктор конфига, принимающий на вход имя файла конфига 
+Config::Config() {
+    file_ptr.open("config.cfg");
+}
+
+Config::~Config() {
+    file_ptr.close();
+}
+
+Config::Config(const Config& obj) {
+    this->buffer = obj.buffer;
+}
+
+Config::Config(std::string fileName) {
+    // TODO: конструктор конфига, принимающий на вход имя файла конфига
+
+    file_ptr.open(fileName);
 }
 
 std::string& Config::read() {
-    // TODO: чтение форматированной строки конфига 
+    // TODO: чтение форматированной строки конфига
+
+    file_ptr >> buffer;
+    return buffer;
 }
 
 void Config::write(const std::string&) {
@@ -13,30 +30,36 @@ void Config::write(const std::string&) {
 }
 
 
-UrlToIpConverter::UrlToIpConverter(VPNContext vpnContext) {
-    // TODO: конструктор класса-конвертера из списка url в IP лист 
-}
-
 void UrlToIpConverter::runConvert() {
     // TODO: метод, реализующий конвертацию url ссылок в ip лист
 }
 
 std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
     // TODO: метод, запрашивающий по url ip лист
+
+    std::vector<std::string> ipVector;
+    ipVector.push_back(url);
+    return ipVector;
 }
 
 std::vector<OptionalUrl> UrlToIpConverter::getOptionalUrlList() {
     // TODO: метод, возвращающий вектор структур из ip листа и url
     // (т.е структуру со всеми необходимыми данными)
+
+    return vpnList;
 }
 
 
 Config MakeConfigurationFiles::MakeServerConfig() {
     // TODO: создание конфига сервера
+
+    return Config("config");
 }
 
 Config MakeConfigurationFiles::MakeClientConfig() {
     // TODO: создание конфига клиента
+
+    return Config("config");
 }
 
 
@@ -54,22 +77,32 @@ void OVPNRunner::StopOpenVPNServer() {
 
 Config OVPNRunner::GetClientConfig() {
     // TODO: получение конфига клиента
+
+    return clientConfig;
 }
 
 Config OVPNRunner::GetServerConfig() {
     // TODO: получение конфига сервера
+
+    return serverConfig;
 }
 
 void VpnMsgHandler::handle(boost::asio::const_buffer msgBuffer) {
     // TODO: хэндлер, принимающий буффер с url в виде бит с сервера
+
+    inputAnalyze(msgBuffer);
 }
 
 Config VpnMsgHandler::reply() {
     // TODO: проброс клиентского конфига обратно на сервера
+
+    return ovpnRunner.GetClientConfig();
 }
 
-void VpnMsgHandler::inputAnalyze() {
+void VpnMsgHandler::inputAnalyze(boost::asio::const_buffer msgBuffer) {
     // TODO: разработка входных данных на сервер
+
+    vpnContext = convertVpnMsgToVpnContext(msgBuffer);
 }
 
 void VpnMsgHandler::setVpnContext(const VPNContext& vpnContext_) {
@@ -86,8 +119,18 @@ void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl>& vpnList_) {
 
 VPNContext VpnMsgHandler::convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg) {
     // TODO: метод конвертации буфера с сервера в VPNContext
+
+    vpnMsg.data();
+    return VPNContext();
 }
 
-std::vector<OptionalUrl> VpnMsgHandler::convertVpnContextToVpnList(const VPNContext& ) {
+std::vector<OptionalUrl> VpnMsgHandler::convertVpnContextToVpnList(const VPNContext& vpnContext_) {
     // TODO: метод конвертации VPNContext в вектор наборов из url и Ip листов
+
+    std::vector<OptionalUrl> ipUrlLists;
+    OptionalUrl ipUrlList;
+    ipUrlList.url = vpnContext_.urlList.at(0);
+    ipUrlLists.push_back(OptionalUrl());
+
+    return ipUrlLists;
 }

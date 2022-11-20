@@ -1,20 +1,23 @@
-#include "tools.h"
+#pragma once
+
+#include <tools.h>
 #include <fstream>
 #include <boost/asio.hpp>
 
-struct OptionalUrl {
-    std::string url;
-    std::vector<std::string> ipList;
-};
 
 class Config {
 public:
-    explicit Config(const std::string& fileName = "client.cfg");
+    Config();
+    explicit Config(std::string fileName);
+    Config(const Config&);
+    ~Config();
+
     void write(const std::string& buffer);
     std::string& read();
 
 private:
     std::ifstream file_ptr;
+    std::string buffer;
 };
 
 class IHandler {
@@ -26,7 +29,7 @@ public:
 
 class UrlToIpConverter {
 public:
-    explicit UrlToIpConverter(VPNContext );
+    explicit UrlToIpConverter(VPNContext vpnContext_) : vpnContext(vpnContext_) { }
     void runConvert();
     std::vector<OptionalUrl> getOptionalUrlList();
 
@@ -72,7 +75,7 @@ public:
     Config reply();
 
 private:
-    void inputAnalyze();
+    void inputAnalyze(boost::asio::const_buffer );
 
     VPNContext convertVpnMsgToVpnContext(boost::asio::const_buffer vpnMsg);
     std::vector<OptionalUrl> convertVpnContextToVpnList(const VPNContext& );

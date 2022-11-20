@@ -14,3 +14,8 @@ struct VPNContext {
     VPNMode state;
     std::vector<std::string> urlList; 
 };
+
+struct OptionalUrl {
+    std::string url;
+    std::vector<std::string> ipList;
+};
