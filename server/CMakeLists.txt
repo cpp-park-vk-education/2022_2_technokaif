@@ -10,8 +10,9 @@ add_subdirectory(net)
 # message("LOGIC_INCLUDE_DIRS = ${LOGIC_INCLUDE_DIRS}")
 # message("LOGIC_LIBRARIES = ${LOGIC_LIBRARIES}")
 
-include_directories(${LOGIC_INCLUDE_DIRS})
-include_directories(${NET_INCLUDE_DIRS})
+# include_directories(${LOGIC_INCLUDE_DIRS})
+# include_directories(${NET_INCLUDE_DIRS})
+# include_directories(/usr/local/boost_1_77_0/boost)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
@@ -21,3 +22,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LOGIC_LIBRARIES} ${NET_LIBRARIES}
 
 enable_testing()
 add_subdirectory(tests)
+
+
