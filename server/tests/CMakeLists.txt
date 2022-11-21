@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(test_logic)
+project(tests)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(googletest)
 find_package(GTest REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${LOGIC_INCLUDE_DIRS} ${NET_LIBRARIES} ${GTEST_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${LOGIC_INCLUDE_DIRS} ${NET_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LOGIC_LIBRARIES} ${NET_LIBRARIES} GTest::gtest_main GTest::gmock)
 
 set(TEST_COMMAND)

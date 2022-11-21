@@ -28,7 +28,7 @@ class VpnConnection : public boost::enable_shared_from_this<VpnConnection> {
 public:
     VpnConnection(io_context &io_context_);
 
-    void run();
+    int run();
 
     ip::tcp::socket &getSocket();
 

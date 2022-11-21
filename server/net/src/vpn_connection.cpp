@@ -10,8 +10,9 @@ VpnConnection::VpnConnection(io_context &io_context_) :
         runner(OVPNRunner()),
         socket_(io_context_) {}
 
-void VpnConnection::run() {
+int VpnConnection::run() {
 
+    return 0;
 }
 
 ip::tcp::socket &VpnConnection::getSocket() {
