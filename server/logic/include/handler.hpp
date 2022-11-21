@@ -56,8 +56,8 @@ class OVPNRunner {
 public:
     OVPNRunner();
     
-    void RunOpenVPNServer();
-    void StopOpenVPNServer();
+    int RunOpenVPNServer();
+    int StopOpenVPNServer();
 
     Config GetClientConfig();
     Config GetServerConfig();
@@ -70,9 +70,9 @@ private:
 
 class VpnMsgHandler : public IHandler {
 public:
-    VpnMsgHandler(OVPNRunner& runner) : ovpnRunner(runner) { }
+    explicit VpnMsgHandler(OVPNRunner& runner) : ovpnRunner(runner) { }
     void handle(char[BUFF_SIZE] ) override;
-    Config reply();
+    Config reply() override;
 
 private:
     void inputAnalyze(char[BUFF_SIZE] );
