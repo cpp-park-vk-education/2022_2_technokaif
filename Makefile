@@ -3,13 +3,13 @@
 all: clean check build memtest
 
 clean:
-	rm -rf ./server/build
+	rm -rf ./server/build ./client/build
 
 check:
-	./scripts/linters/run.sh
+	./scripts/run_linters.sh
 
 build:
-	./build.sh
+	./scripts/build.sh
 
 rebuild: clean build
 
