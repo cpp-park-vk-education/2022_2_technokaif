@@ -9,7 +9,7 @@ cmake "$@" ..
 cmake --build .
 
 cd $path
-cd client
+cd client || exit 0
 mkdir build
 cd build
 cmake "$@" ..

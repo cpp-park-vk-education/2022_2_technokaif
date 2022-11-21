@@ -4,13 +4,14 @@
 
 #include <boost/asio.hpp>
 #include <boost/chrono.hpp>
-// #include <boost/system.hpp>
+#include <boost/system.hpp>
 #include <boost/bind/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 typedef const boost::system::error_code boost_error;
+static const int default_port = 0;
 
 class Server {
 public:
@@ -28,6 +29,7 @@ private:
     io_context &io_context_;
     ip::tcp::acceptor acceptor_;
     size_t connections;
+
     // Client::clients_map clients;
     // steady_timer timer;
 };

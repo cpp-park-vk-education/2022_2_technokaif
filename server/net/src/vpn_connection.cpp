@@ -7,15 +7,15 @@
 */
 
 VpnConnection::VpnConnection(io_context &io_context_) :
-            socket_(io_context_),
-            runner(OVPNRunner()) {}
+        runner(OVPNRunner()),
+        socket_(io_context_) {}
 
 void VpnConnection::run() {
 
 }
 
 ip::tcp::socket &VpnConnection::getSocket() {
-
+    return socket_;
 }
 
 void VpnConnection::readMsg() {
@@ -24,9 +24,9 @@ void VpnConnection::readMsg() {
 }
 
 void VpnConnection::handleRead(boost_error &error, size_t bytes) {
-    // TODO обработка ошибок
+    // TODO РїСЂРѕРІРµСЂРєР° РѕС€РёР±РѕРє
     /*Handler *handler = new Handler(runner);
-    handlerMsg(handler);*/
+    handleMsg(handler);*/
 }
 
 void VpnConnection::sendReply(ip::tcp::socket &destination) {
