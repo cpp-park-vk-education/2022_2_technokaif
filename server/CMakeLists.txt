@@ -10,8 +10,8 @@ add_subdirectory(net)
 # message("LOGIC_INCLUDE_DIRS = ${LOGIC_INCLUDE_DIRS}")
 # message("LOGIC_LIBRARIES = ${LOGIC_LIBRARIES}")
 
-include_directories(${LOGIC_INCLUDE_DIRS} ${NET_INCLUDE_DIRS})
-# include_directories(/usr/local/boost_1_77_0/boost)
+set(BOOST_INCLUDE_DIRS "/usr/local/boost_1_77_0")
+include_directories(${LOGIC_INCLUDE_DIRS} ${NET_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} main.cpp)
 
