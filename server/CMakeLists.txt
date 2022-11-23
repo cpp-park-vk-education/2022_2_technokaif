@@ -21,5 +21,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LOGIC_LIBRARIES} ${NET_LIBRARIES}
 
 enable_testing()
 add_subdirectory(tests)
-
-
