@@ -1,7 +1,7 @@
 #ifndef STARTPAGE_H
 #define STARTPAGE_H
 
-#include "tools/utils.h"
+#include "../tools/utils.h"
 #include "include/user.h"
 
 #include <QWidget>
