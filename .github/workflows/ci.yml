@@ -25,5 +25,5 @@ jobs:
     container: stepanpopov/rabbit_hole
     needs: [build]
     steps:
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v2
       - run: make memtest

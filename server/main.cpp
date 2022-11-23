@@ -1,7 +1,10 @@
-#include <iostream>
-#include "logic.hpp"
+#include "server.hpp"
 
-int main(void) {
-    std::cout << fact(5) << std::endl;
+int main(int argc, char *argv[]) {
+    unsigned int port = argc > 1 ? std::stol(argv[1]) : default_port;
+    // io_context context;
+    // Server server(context, port);
+    // server.start();
+    // context.run();
     return 0;
 }
