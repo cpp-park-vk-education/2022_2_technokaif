@@ -1,4 +1,4 @@
-#include "../include/client.h"
+#include "network/include/client.h"
 
 int main() {
     Client client;

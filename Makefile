@@ -3,7 +3,7 @@
 all: clean check build memtest
 
 clean:
-	rm -rf ./server/build ./client/build
+	rm -rf */build
 
 check:
 	./scripts/run_linters.sh
@@ -15,3 +15,4 @@ rebuild: clean build
 
 memtest:
 	./scripts/valgrind.sh ./server/build/server --memcheck
+	./scripts/valgrind.sh ./client/build/client --memcheck

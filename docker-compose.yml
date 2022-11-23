@@ -3,8 +3,7 @@ version: '3'
 # To start: 
 # - docker-compose up
 # To finish:
-# - docker stop $(docker ps -a -q)
-# - docker rm $(docker ps -a -q) && docker volume prune -f
+# - docker-compose down
 
 services:
 
