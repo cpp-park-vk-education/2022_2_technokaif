@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 project(client)
 
 SET(CMAKE_CXX_STANDARD 17)
@@ -16,5 +17,5 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${NETWORK_LIBRARIES})
 
-enable_testing()
+# enable_testing()
 # add_subdirectory(tests)
