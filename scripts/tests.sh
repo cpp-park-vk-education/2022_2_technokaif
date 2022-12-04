@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 
+function print_header() {
+    echo -e "\n***** ${1} *****"
+}
+
 path=$(pwd)
-# server
+
+# SERVER
+print_header "RUNNING TESTS"
 cd ./server/build && ctest -V -R
 
-lcov -t "tests/" -o coverage.info -c -d net/
-genhtml -o report coverage.info
+print_header "GENERATING COVERAGE INFO"
+lcov -t "tests/" -o coverage.info -c -d net/ -d logic/
+lcov --remove coverage.info '/usr/*' '*/boost/*' -o filtered_coverage.info
+
+print_header "COVERAGE REPORT"
+genhtml -o report filtered_coverage.info
