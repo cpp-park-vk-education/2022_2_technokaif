@@ -3,8 +3,14 @@
 #include <tools.h>
 #include <fstream>
 #include <boost/asio.hpp>
+#include <boost/json.hpp>
+#include <string>
+
+namespace json = boost::json;
 
 const int BUFF_SIZE = 512;
+std::string nslookup = "nslookup google.com | grep -E \"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\"  > ip.md";
+std::string grep_command = "grep -oE '\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\b' ip.md | grep -v '#'"; 
 
 class Config {
 public:
