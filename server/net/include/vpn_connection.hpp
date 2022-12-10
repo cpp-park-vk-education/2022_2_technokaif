@@ -3,52 +3,58 @@
 #include <string>
 
 #include <boost/asio.hpp>
-#include <boost/chrono.hpp>
-#include <boost/system.hpp>
+// #include <boost/chrono.hpp>
+// #include <boost/system.hpp>
 #include <boost/bind/bind.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-#include <boost/enable_shared_from_this.hpp>
 // #include <sys/types.h>
+
+#include <memory>
+
+// TODO ILYA
+class IHandler;
 
 class OVPNRunner {
 
 };
-class IHandler; 
+// TODO ILYA
 
-using namespace boost::asio;
 
-typedef const boost::system::error_code boost_error;
+static inline constexpr int BUFF_SIZE = 512;
 
-// typedef boost::shared_ptr <VpnConnection> ptr;
-
-static const int BUFF_SIZE = 512;
-
-class VpnConnection : public boost::enable_shared_from_this<VpnConnection> {
+class VpnConnection : public std::enable_shared_from_this<VpnConnection> {
 public:
-    VpnConnection(io_context &io_context_);
+    VpnConnection(boost::asio::io_context &io_context_);
 
-    int run();
+    void run(size_t *id);
 
-    ip::tcp::socket &getSocket();
+    boost::asio::ip::tcp::socket &getSocket();
 
-    static boost::shared_ptr<VpnConnection> create(io_context &io_context_) {
-        return boost::shared_ptr<VpnConnection>(new VpnConnection(io_context_));
+    std::shared_ptr<VpnConnection> getPtr() {
+        return shared_from_this();
+    }
+
+    static std::shared_ptr<VpnConnection> create(boost::asio::io_context &io_context_) {
+        return std::make_shared<VpnConnection>(io_context_);
     }
 
 private:
     void readMsg();
 
-    void handleRead(boost_error &error, size_t bytes);
+    void handleRead(const boost::system::error_code &error, size_t bytes);
 
-    void handleMsg(IHandler *handler);
+    std::string handleMsg(std::string vpnMsg);
 
-    void sendReply(ip::tcp::socket &destination);
+    void sendReply();
 
-    void connection_close();
+    void closeConnection();
 
-    OVPNRunner runner;
+    void dummy(const boost::system::error_code &error, size_t bytes) {}
+
+    // OVPNRunner runner;
     char read_buff[BUFF_SIZE];
     std::string write_buff;
-    ip::tcp::socket socket_;
+    boost::asio::ip::tcp::socket socket_;
+
+    size_t *connections_ = nullptr;
+    size_t id_;
 };
