@@ -1,38 +1,40 @@
 #include "tools.h"
 #include <string>
+#include <fstream>
 
-class IOpenVPNClient {
-public:
-    virtual void runOpenVPN() = 0;
-    virtual void stopOpenVPN() = 0;
-};
-
-class OpenVPNClient : virtual public IOpenVPNClient {
+class OpenVPNClient {
 private:
-    std::string _configFileName;
-    void execOpenVPN();
+    const std::string _configFileName = "config.ovpn";
+    int pid = 0;
 
 public:
-    virtual void runOpenVPN() override;
-    virtual void stopOpenVPN() override;
+    void updateConfig(const std::string& cfg);
+
+    void runOpenVPN();
+    void stopOpenVPN();
 };
 
 class Client {
 private:
-    static const int BUFFER_SIZE = 512;
-    char msg[BUFFER_SIZE];
-    OpenVPNClient oVPNClient;
-    VPNContext context;
 
-    void _onContext();
-    void _asyncReadMsg();  // может прийти конфиг или таймаут
-    void _handleRead();
-    void _inputAnalysis();
+    boost::asio::posix::stream_descriptor _inputStream;
 
-    void _asincWrite();
-    void _handleWrite();
+    boost::asio::ip::tcp::socket _socket;
+
+    std::string _ip = "127.0.0.1";
+    unsigned int _port = 80;
+
+    OpenVPNClient oVPNclient;
+    VPNContext _context;
 
 public:
-    void setVPNContext(VPNContext);
+    Client(boost::asio::io_context& context, std::string ip, unsigned int port);
+    ~Client() {}
+
+    void sendData();
+    void getData();
+    void getVPNContext();  // from console
     void connect();
+    void stopConnection();
+    bool isStateStop() { return _context.state == VPNMode::stopped; }
 };

@@ -12,5 +12,6 @@ cd $path
 cd client
 mkdir build
 cd build
+touch config.ovpn
 cmake "$@" ..
 cmake --build .
