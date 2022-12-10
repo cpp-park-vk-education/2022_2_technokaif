@@ -6,13 +6,17 @@ clean:
 	rm -rf */build
 
 check:
-	./scripts/run_linters.sh
+	./scripts/linters/run.sh
 
 build:
-	./scripts/build.sh
+	./scripts/build.sh -DMEMCHECK=OFF
 
 rebuild: clean build
 
+test:
+	./scripts/build.sh -DMEMCHECK=OFF
+	./scripts/tests.sh
+
 memtest:
-	./scripts/valgrind.sh ./server/build/server --memcheck
-	./scripts/valgrind.sh ./client/build/client --memcheck
+	./scripts/build.sh -DMEMCHECK=ON
+	./scripts/tests.sh
