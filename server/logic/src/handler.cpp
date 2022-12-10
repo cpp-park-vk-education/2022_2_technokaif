@@ -33,20 +33,62 @@ void Config::write(const std::string&) {
 
 void UrlToIpConverter::runConvert() {
     // TODO(Ilya): метод, реализующий конвертацию url ссылок в ip лист
+    if (vpnContext.state != runOptional) {
+        return;
+    }
+
+    for (const auto &url : vpnContext.urlList) {
+        this->vpnList.push_back({url, nsRequest(url)});
+    }
 }
 
 std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
     // TODO(Ilya): метод, запрашивающий по url ip лист
 
+    boost::regex pattern("/^(?:https?:\\/\\/)?(?:www\\.)?([^/]+)/");
+    boost::smatch result;
+    bool isMatchFound = boost::regex_match(url, result, pattern); 
+    std::string host;
+    if (isMatchFound) { 
+        host = result[0];
+    }
+
     std::vector<std::string> ipVector;
-    ipVector.push_back(url);
+    FILE* fp;
+    int status;
+    const std::string nslookup = "nslookup google.com | grep -oE '\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b";
+    const char* command = const_cast<char*>(nslookup.c_str());
+    fp = popen(command, "r");
+    if (fp == NULL) {
+        std::cerr << "Error processing url in ip list" << std::endl;
+    }
+
+    int MAX_BUFFER_SIZE = 30;
+    int counter = 0;
+    while (!feof(fp)) {
+        char buf[MAX_BUFFER_SIZE];
+        fgets(buf, MAX_BUFFER_SIZE, fp);
+        if (counter > 1) {
+            ipVector.push_back(std::string(buf));
+        }
+
+        ++counter;
+    }
+
+
+    status = pclose(fp);
+    if (status == -1) {
+        std::cerr << "Error while closing convertion process" << std::endl;
+    }
+
     return ipVector;
 }
 
-std::vector<OptionalUrl> UrlToIpConverter::getOptionalUrlList() {
+std::vector<OptionalUrl> UrlToIpConverter::getOptionalUrlList(VPNContext vpnContext_) {
     // TODO(Ilya): метод, возвращающий вектор структур из ip листа и url
     // (т.е структуру со всеми необходимыми данными)
 
+    runConvert();
     return vpnList;
 }
 
@@ -92,7 +134,7 @@ Config OVPNRunner::GetServerConfig() {
     return serverConfig;
 }
 
-void VpnMsgHandler::handle(char* msgBuffer) {
+void VpnMsgHandler::handle(std::string msgBuffer) {
     // TODO(Ilya): хэндлер, принимающий буффер с url в виде бит с сервера
 
     inputAnalyze(msgBuffer);
@@ -104,39 +146,43 @@ Config VpnMsgHandler::reply() {
     return ovpnRunner.GetClientConfig();
 }
 
-void VpnMsgHandler::inputAnalyze(char msgBuffer[BUFF_SIZE]) {
+void VpnMsgHandler::inputAnalyze(std::string msgBuffer) {
     // TODO(Ilya): разработка входных данных на сервер
 
-    vpnContext = convertVpnMsgToVpnContext(msgBuffer);
+    convertVpnMsgToVpnContext(msgBuffer);
+    convertVpnContextToVpnList();
 }
 
 void VpnMsgHandler::setVpnContext(const VPNContext& vpnContext_) {
-    this->vpnContext = vpnContext_;
-}
-
-void VpnMsgHandler::setVpnMode(const VPNMode& vpnMode_) {
-    vpnMode = vpnMode_;
+    this->_vpnContext = vpnContext_;
 }
 
 void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl>& vpnList_) {
-    vpnList = vpnList_;
+    this->_vpnList = vpnList_;
 }
 
-VPNContext VpnMsgHandler::convertVpnMsgToVpnContext(char vpnMsg[BUFF_SIZE]) {
+void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg) {
     // TODO(Ilya): метод конвертации буфера с сервера в VPNContext
 
-    VPNContext vpnContext;
-    vpnContext.urlList.push_back(std::string(vpnMsg));
-    return VPNContext();
+    nlohmann::json j = nlohmann::json::parse(vpnMsg);
+    _vpnContext.state = j["state"].get<VPNMode>();
+    j["urlList"].get_to<std::vector<std::string>>( _vpnContext.urlList);
 }
 
-std::vector<OptionalUrl> VpnMsgHandler::convertVpnContextToVpnList(const VPNContext& vpnContext_) {
+void VpnMsgHandler::convertVpnContextToVpnList() {
     // TODO(Ilya): метод конвертации VPNContext в вектор наборов из url и Ip листов
 
-    std::vector<OptionalUrl> ipUrlLists;
-    OptionalUrl ipUrlList;
-    ipUrlList.url = vpnContext_.urlList.at(0);
-    ipUrlLists.push_back(OptionalUrl());
+    _vpnList = urlConverter.getOptionalUrlList(_vpnContext);
+}
 
-    return ipUrlLists;
+int main() {
+    VPNContext context = {runOptional, {"google.com", "https://google.com"}};
+    UrlToIpConverter converter;
+    std::vector<OptionalUrl> ipList;
+    ipList = converter.getOptionalUrlList(context);
+    for (auto elem : ipList) {
+        for (auto ip : elem.ipList) {
+            std::cout << ip << std::endl;
+        }
+    }
 }

@@ -5,13 +5,13 @@
 
 class MockHandler : public IHandler {
 public:
-    MOCK_METHOD1(handle, void(char* buffer));
+    MOCK_METHOD1(handle, void(std::string buffer));
     MOCK_METHOD0(reply, Config());
 };
 
 TEST(ServerHandlerTest, HandlerStartCheck) {
     MockHandler handler;
-    char buffer[BUFF_SIZE];
+    std::string buffer = "";
     EXPECT_CALL(handler, handle(buffer)).Times(1);
 
     handler.handle(buffer);
