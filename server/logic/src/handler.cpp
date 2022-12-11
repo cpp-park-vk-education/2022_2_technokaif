@@ -357,27 +357,3 @@ void VpnMsgHandler::convertVpnContextToVpnList()
 
     _vpnList = urlConverter.getOptionalUrlList(_vpnContext);
 }
-
-int main()
-{
-    VPNContext context = {runOptional, {"google.com", "https://google.com"}};
-    nlohmann::json j{};
-    j["state"] = context.state;
-    j["urlList"] = context.urlList;
-    std::string input = j.dump();
-    VpnMsgHandler handler;
-    handler.handle(input);
-    // handler.handle(input);
-    // std::vector<OptionalUrl> ipList;
-    // ipList = converter.getOptionalUrlList(context);
-    // for (auto elem : ipList)
-    // {
-    //     for (auto ip : elem.ipList)
-    //     {
-    //         std::cout << ip << std::endl;
-    //     }
-    // }
-
-    std::string output = handler.reply();
-    std::cout << output;
-}

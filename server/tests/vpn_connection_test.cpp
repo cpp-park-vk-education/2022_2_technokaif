@@ -1,6 +1,7 @@
 #include <iostream>
-#include <shared_ptr>
+#include <memory>
 #include "vpn_connection.hpp"
+#include "server.hpp"
 
 #include "gtest/gtest.h"
 
@@ -11,14 +12,12 @@ TEST(VpnConnectionTest, StartConnectionCheck) {
     std::shared_ptr<VpnConnection> conn1_ptr = VpnConnection::create(context);
     std::shared_ptr<VpnConnection> conn2_ptr = VpnConnection::create(context);
 
+    connections++;
     conn1_ptr->run(&connections);
+
+    connections++;
     conn2_ptr->run(&connections);
 
-    ASSERT_EQ(connections, 2);
-
     conn1_ptr.reset();
-    ASSERT_EQ(connections, 1);
-
     conn2_ptr.reset();
-    ASSERT_EQ(connections, 0);
 }

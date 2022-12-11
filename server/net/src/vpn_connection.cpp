@@ -48,9 +48,8 @@ void VpnConnection::handleRead(const boost::system::error_code &error, size_t by
 
 std::string VpnConnection::handleMsg(std::string vpnMsg) {
     std::cout << "CLIENT MESSAGE : " << vpnMsg << std::endl;
-    return "ANSWER\n";
-   /* handler.handle(vpnMsg);  // BLOCKING OPERATION
-    return handler.reply();*/
+    handler.handle(vpnMsg);  // BLOCKING OPERATION
+    return handler.reply();
 }
 
 void VpnConnection::sendReply() {
