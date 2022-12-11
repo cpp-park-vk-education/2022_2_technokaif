@@ -12,9 +12,13 @@ OpenVPNClient::~OpenVPNClient() {
     }
 }
 
-void OpenVPNClient::updateConfig(const std::string& cfg) {
+void OpenVPNClient::clearConfig() {
     std::fstream out(_configFileName);
     out.clear();
+}
+
+void OpenVPNClient::updateConfig(const std::string& cfg) {
+    std::fstream out(_configFileName);
     out << cfg;
 }
 
@@ -58,17 +62,23 @@ void Client::getData() {
     input.resize(512);
     _socket.receive(boost::asio::buffer(input, 512));
 
+    oVPNclient.clearConfig();
+    while (!input.empty()) {
+        oVPNclient.updateConfig(input);
+        oVPNclient.updateConfig("\n");
+        _socket.receive(boost::asio::buffer(input, 512));
+    }
+    
     // json j = json::parse(input);
     // input = j["config"];
 
-    std::ifstream fin("config.ovpn");
-    std::ostringstream sout;
+    // std::ifstream fin("config.ovpn");
+    // std::ostringstream sout;
     
-    std::copy(std::istreambuf_iterator<char>(fin),
-        std::istreambuf_iterator<char>(),
-        std::ostreambuf_iterator<char>(sout));
+    // std::copy(std::istreambuf_iterator<char>(fin),
+    //     std::istreambuf_iterator<char>(),
+    //     std::ostreambuf_iterator<char>(sout));
 
-    oVPNclient.updateConfig(sout.str());
     oVPNclient.runOpenVPN();
 }
 

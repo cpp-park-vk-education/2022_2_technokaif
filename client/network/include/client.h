@@ -10,6 +10,7 @@ private:
 public:
     ~OpenVPNClient();
 
+    void clearConfig();
     void updateConfig(const std::string& cfg);
 
     void runOpenVPN();
