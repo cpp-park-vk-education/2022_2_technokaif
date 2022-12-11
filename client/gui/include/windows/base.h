@@ -1,5 +1,5 @@
-#ifndef RABBITHOLEGUI_H
-#define RABBITHOLEGUI_H
+#ifndef BASE_H
+#define BASE_H
 
 #include <QWidget>
 #include <QStackedWidget>
@@ -53,4 +53,4 @@ private:
     QPushButton* profileBtn;
 };
 
-#endif // RABBITHOLEGUI_H
+#endif // BASE_H

@@ -1,8 +1,8 @@
 #include "../include/windows/configwindow.h"
 
 ConfigWindow::ConfigWindow(QWidget *parent) :
-    QWidget(parent)
-{
+                            QWidget(parent) {
+
     setFixedHeight(480);
     setFixedWidth(330);
 
@@ -54,8 +54,7 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
     connect(deleteBtn, &QPushButton::clicked, this, &ConfigWindow::deleteClicked);
 }
 
-ConfigWindow::~ConfigWindow()
-{
+ConfigWindow::~ConfigWindow() {
     delete layout;
     delete header;
 
@@ -72,24 +71,20 @@ ConfigWindow::~ConfigWindow()
     delete errorField;
 }
 
-void ConfigWindow::addClicked()
-{
+void ConfigWindow::addClicked() {
     QString domain = domainInput->text();
 
     errorField->setText("");
 
-    if (domain.size() == 0)
-    {
+    if (domain.size() == 0) {
         errorField->setText("Enter a domain");
         return;
     }
 
-    for (uint i = 0; i < domainList->count(); ++i)
-    {
+    for (uint i = 0; i < domainList->count(); ++i) {
         QListWidgetItem* item = domainList->item(i);
 
-        if (domain == item->text())
-        {
+        if (domain == item->text()) {
             errorField->setText("Domain already added");
             return;
         }
@@ -98,20 +93,19 @@ void ConfigWindow::addClicked()
     domainList->addItem(domain);
 }
 
-void ConfigWindow::clearClicked()
-{
+void ConfigWindow::clearClicked() {
     domainList->clear();
 }
 
-void ConfigWindow::deleteClicked()
-{
+void ConfigWindow::deleteClicked() {
     QListWidgetItem *item = domainList->item(domainList->currentRow());
 
-    if (!item)
-    {
+    errorField->setText("");
+
+    if (!item) {
         errorField->setText("Choose a domain");
         return;
     }
 
-    domainList->takeItem (domainList->currentRow());
+    domainList->takeItem(domainList->currentRow());
 }

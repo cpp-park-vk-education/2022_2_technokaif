@@ -21,13 +21,14 @@ class IConfigWidget {
     virtual void deleteClicked() = 0;
 };
 
-class ConfigWindow : public QWidget, public IConfigWidget
-{
+class ConfigWindow : public QWidget, public IConfigWidget {
     Q_OBJECT
 
 public:
     explicit ConfigWindow(QWidget *parent = nullptr);
     ~ConfigWindow();
+
+    QListWidget* domainList;
 
 private slots:
     void addClicked() override;
@@ -37,8 +38,6 @@ private slots:
 private:
     QVBoxLayout* layout;
     QLabel* header;
-
-    QListWidget* domainList;
 
     QHBoxLayout* buttons;
     QPushButton* deleteBtn;

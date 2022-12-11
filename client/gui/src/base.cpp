@@ -93,8 +93,20 @@ void Base::profileClicked() {
 
 void Base::runChanged(bool checked) {
     if (checked) {
+
+        // client.connect()
+
         state = RunStatus::RUNNING;
+        
+        if (mode == VPNMode::OPTIONAL) {
+            std::vector<std::string> urlList = getUrlList();
+        }
+        
+        // client.sendData()
+
     } else {
+        // client.closeConnection()
+
         state = RunStatus::STOPPED;
     }
 }
@@ -110,8 +122,8 @@ void Base::modeChanged(bool checked) {
 std::vector<std::string> Base::getUrlList() {
     std::vector<std::string> urlList;
 
-    for (uint i = 0; i < configWindow->domainList->count(); ++i) {
-        QListWidgetItem* item = configWindow->domainList->item(i);
+    for (uint i = 0; i < configPage->domainList->count(); ++i) {
+        QListWidgetItem* item = configPage->domainList->item(i);
 
         urlList.push_back(item->text().toStdString());
     }

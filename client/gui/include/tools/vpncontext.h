@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VPNCONTEXT_H
+#define VPNCONTEXT_H
 
 enum VPNMode {
     TOTAL,
@@ -14,3 +15,5 @@ struct VPNContext {
     VPNMode state;
     std::vector<std::string> urlList;
 };
+
+#endif  // VPNCONTEXT_H

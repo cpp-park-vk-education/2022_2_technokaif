@@ -4,14 +4,12 @@
 #include <QLabel>
 #include <QIcon>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     Base w;
     w.setWindowTitle("Rabbit Hole");
-    QIcon logo("img/rabbit.png");
-    w.setWindowIcon(logo);
+    w.setWindowIcon(QIcon("img/rabbit.png"));
 
     w.show();
 
