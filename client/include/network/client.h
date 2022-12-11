@@ -25,7 +25,7 @@ private:
     std::string _ip = "127.0.0.1";
     unsigned int _port = 80;
 
-    OpenVPNClient oVPNclient;
+    OpenVPNClient _oVPNclient;
     VPNContext _context;
 
 public:

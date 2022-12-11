@@ -8,9 +8,10 @@ using json = nlohmann::json;
 // ----------------------------- OpenVPNClient -------------------------------
 
 OpenVPNClient::~OpenVPNClient() {
-    if (pid != 0) {
-        kill(pid, SIGKILL);
-    }
+    // if (pid != 0) {
+    //     kill(pid, SIGKILL);
+    // }
+    system("sudo killall openvpn");
 }
 
 void OpenVPNClient::updateConfig(const std::string& cfg) {
@@ -33,9 +34,10 @@ void OpenVPNClient::runOpenVPN() {
 }
 
 void OpenVPNClient::stopOpenVPN()  {
-    if (pid != -1) {
-        kill(pid, SIGKILL);
-    }
+    // if (pid != 0) {
+    //     kill(pid, SIGKILL);
+    // }
+    system("sudo killall openvpn");
 }
 
 
@@ -58,11 +60,23 @@ void Client::sendData() {
 }
 
 void Client::getData() {
-    std::string input;
-    input.resize(16384);
-    _socket.receive(boost::asio::buffer(input, 16384));
+    // input.resize(1 << 13);
+    std::cout << "----- INPUT BEFORE RECEIVING -----" << std::endl;
+    // _socket.read_some(boost::asio::buffer(input, input.size()));
+    // boost::asio::read_until(_socket, boost::asio::buffer(input, input.size()), '}');
 
-    std::cout << "input: " << input << std::endl;
+    boost::asio::streambuf b;
+    boost::asio::read_until(_socket, b, '}');
+    std::istream is(&b);
+    std::string input;
+    std::copy(std::istreambuf_iterator<char>(is),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(input));
+
+    std::cout << "----- INPUT AFTER RECEIVING -----" << std::endl;
+    std::cout << "INPUT LENGTH = " << input.length() << std::endl;
+    std::cout << input << std::endl;
+    std::cout << "----- END OF INPUT -----" << std::endl;
 
     json j = json::parse(input);
 
@@ -72,8 +86,8 @@ void Client::getData() {
         config += '\n';
     }
 
-    oVPNclient.updateConfig(config);
-    oVPNclient.runOpenVPN();
+    _oVPNclient.updateConfig(config);
+    _oVPNclient.runOpenVPN();
 }
 
 Client::Client(boost::asio::io_context& context, std::string ip, unsigned int port) :
@@ -101,6 +115,8 @@ void Client::stopConnection() {
 
     _inputStream.close(); 
     _socket.close();
+    
+    _oVPNclient.stopOpenVPN();
 
     std::cout << "connection close" << std::endl;
 }
