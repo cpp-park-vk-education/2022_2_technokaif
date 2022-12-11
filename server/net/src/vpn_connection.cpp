@@ -1,15 +1,11 @@
 #include "vpn_connection.hpp"
 #include <iostream>
 
-/*
-#define SV_BIND(a)  boost::bind(&Server::a, this, new_client, placeholders::error)
-#define NOCL_BIND(a)  boost::bind(&Server::a, this, placeholders::error)
-#define IO_BIND(a)  boost::bind(&Client::a, shared_from_this(), placeholders::error, placeholders::bytes_transferred)
-*/
 #define IO_BIND(a) boost::bind(&VpnConnection::a, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
 
 VpnConnection::VpnConnection(boost::asio::io_context &io_context_) :
 // runner(OVPNRunner()),
+        handler(),  // Handler INIT
         socket_(io_context_) {}
 
 void VpnConnection::run(size_t *id) {
@@ -45,17 +41,16 @@ void VpnConnection::handleRead(const boost::system::error_code &error, size_t by
     }
 
     // std::string vpnMsg(read_buff, bytes);
-    write_buff = handleMsg(std::string(read_buff, bytes));
+    write_buff = handleMsg(std::string(read_buff, bytes));  // BLOCKING OPERATION
     sendReply();
     readMsg();
 }
 
 std::string VpnConnection::handleMsg(std::string vpnMsg) {
     std::cout << "CLIENT MESSAGE : " << vpnMsg << std::endl;
-   /* IHandler handler();  // HANDLER INIT
-    handler.handle(vpnMsg);  // BLOCKING OPERATION
+    return "ANSWER\n";
+   /* handler.handle(vpnMsg);  // BLOCKING OPERATION
     return handler.reply();*/
-   return "ANSWER\n";
 }
 
 void VpnConnection::sendReply() {

@@ -14,6 +14,7 @@ void Server::start() {
 
 void Server::acceptConnection() {
     std::shared_ptr <VpnConnection> connection = VpnConnection::create(io_context_);
+    // std::cout << "VPN_PTR_COUNT : " << connection.use_count() << std::endl;
     acceptor_.async_accept(connection->getSocket(), boost::bind(&Server::handleConnection,
                                                                 this,
                                                                 connection,
@@ -28,7 +29,9 @@ void Server::handleConnection(std::shared_ptr <VpnConnection> newVpnConnection,
         return;
     }
     std::cout << "CLIENT CONNECTED\n";
-    connections_++;  // TODO vpn connect should connections--
+    connections_++;
+    std::cout << "CONNECTIONS : " << connections_ << std::endl;
     newVpnConnection->run(&connections_);  // RUN
+    // std::cout << "VPN_PTR_COUNT : " << newVpnConnection.use_count() << std::endl;
     acceptConnection();
 }

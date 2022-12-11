@@ -12,10 +12,10 @@
 
 // TODO ILYA
 class IHandler;
+// TODO ILYA
 
-class OVPNRunner {
-
-};
+// TODO ILYA
+class VpnMsgHandler {};
 // TODO ILYA
 
 
@@ -50,6 +50,7 @@ private:
 
     void dummy(const boost::system::error_code &error, size_t bytes) {}
 
+    VpnMsgHandler handler;  // TODO
     // OVPNRunner runner;
     char read_buff[BUFF_SIZE];
     std::string write_buff;
