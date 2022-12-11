@@ -32,7 +32,7 @@ void OpenVPNClient::runOpenVPN() {
     std::cout << "pid = " << pid << std::endl;
 }
 
-void OpenVPNClient::stopOpenVPN()  {
+void OpenVPNClient::stopOpenVPN() {
     if (pid != -1) {
         kill(pid, SIGKILL);
     }
