@@ -1,3 +1,5 @@
+Executable File  12 lines (9 sloc)  510 Bytes
+
 #!/usr/bin/env bash
 
 VALGRIND_LOG="valgrind.log"
