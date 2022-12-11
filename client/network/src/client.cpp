@@ -6,6 +6,12 @@ using json = nlohmann::json;
 
 // ----------------------------- OpenVPNClient -------------------------------
 
+OpenVPNClient::~OpenVPNClient() {
+    if (pid != 0) {
+        kill(pid, SIGKILL);
+    }
+}
+
 void OpenVPNClient::updateConfig(const std::string& cfg) {
     std::fstream out(_configFileName);
     out.clear();
@@ -14,18 +20,23 @@ void OpenVPNClient::updateConfig(const std::string& cfg) {
 
 void OpenVPNClient::runOpenVPN() {
     // pid = execl("/usr/sbin/openvpn", "/usr/sbin/openvpn", _configFileName.c_str(), NULL);
-    if (pid != 0) {
+    if (pid != -1) {
         kill(pid, SIGKILL);
     }
     pid = fork();
     if (pid == 0) {
-        pid = execl("/usr/bin/htop", "/usr/bin/htop", NULL);
+        // pid = execl("./a.out", "a.out", NULL);
+        // pid = execl("/usr/sbin/openvpn", "/usr/sbin/openvpn", "config-test.ovpn", ">output", NULL);
+        // pid = system("openvpn config-test.ovpn >output");
+        pid = execl("./run-openvpn", "./run-openvpn", NULL);
     }
     std::cout << "pid = " << pid << std::endl;
 }
 
 void OpenVPNClient::stopOpenVPN()  {
-    kill(pid, SIGKILL);
+    if (pid != -1) {
+        kill(pid, SIGKILL);
+    }
 }
 
 // ----------------------------- Client -------------------------------

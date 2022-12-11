@@ -5,9 +5,11 @@
 class OpenVPNClient {
 private:
     const std::string _configFileName = "config.ovpn";
-    int pid = 0;
+    int pid = -1;
 
 public:
+    ~OpenVPNClient();
+
     void updateConfig(const std::string& cfg);
 
     void runOpenVPN();

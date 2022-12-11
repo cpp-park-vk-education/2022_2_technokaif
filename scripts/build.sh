@@ -2,16 +2,16 @@
 
 path=$(pwd)
 
-cd server
-mkdir build
-cd build
-cmake "$@" ..
-cmake --build .
+# cd server
+# mkdir build
+# cd build
+# cmake "$@" ..
+# cmake --build .
 
 cd $path
+touch config.ovpn
 cd client
 mkdir build
 cd build
-touch config.ovpn
 cmake "$@" ..
 cmake --build .
