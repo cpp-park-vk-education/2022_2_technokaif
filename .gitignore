@@ -13,3 +13,4 @@
 
 # Logs
 *.log
+/server/logic/src/*.md

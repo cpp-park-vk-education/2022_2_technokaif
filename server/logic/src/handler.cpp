@@ -84,9 +84,6 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url)
 {
     // TODO(Ilya): метод, запрашивающий по url ip лист
 
-    // boost::regex pattern("/^(?:https?:\\/\\/)?(?:www\\.)?([^/]+)/");
-    // boost::smatch result;
-    // bool isMatchFound = boost::regex_match(url, result, pattern);
     std::string host;
     const std::string header = "https://";
     int pos = url.find(header);
@@ -98,21 +95,12 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url)
     {
         host = url;
     }
-    // if (isMatchFound) {
-    //     host = result[0];
-    // }
 
     std::vector<std::string> ipVector;
-    // FILE* fp;
-    // int status;
     std::string nslookup = "nslookup ";
     nslookup += (host + " | grep -oE '\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b' > ip.md");
     const char *command = const_cast<char *>(nslookup.c_str());
-    // fp = popen(command, "r");
     std::system(command);
-    // if (fp == NULL) {
-    //     std::cerr << "Error processing url in ip list" << std::endl;
-    // }
 
     std::ifstream f_ptr("ip.md");
     if (f_ptr.bad())
@@ -137,10 +125,6 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url)
     {
         std::cerr << "Error processing url in ip list" << std::endl;
     }
-    // status = pclose(fp);
-    // if (status == -1) {
-    //     std::cerr << "Error while closing convertion process" << std::endl;
-    // }
 
     return ipVector;
 }
@@ -162,34 +146,16 @@ Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
     int status = 0;
     std::string com = "bash /2022_2_technokaif/server/logic/src/openVpnRun.sh";
     char *command = const_cast<char *>(com.c_str());
-    // f_read = popen(command, "r");
-    // if (f_read == NULL) {
-    //     std::cerr << "Error processing url in ip list" << std::endl;
-    // }
-
-    // scanf(fptr,"%d", &num);
-    // fp = popen(command, "w");
-    // if (fp == NULL)
-    // {
-    //     std::cerr << "Error processing url in ip list" << std::endl;
-    // }
     boost::process::opstream in;
     boost::process::child c(command, boost::process::std_in < in);
 
     com = "1";
     command = const_cast<char *>(com.c_str());
-    // fputs(command, fp);
 
     in << command << std::endl;
 
     command = const_cast<char *>(name.c_str());
-    // fprintf(fp, command);
     in << command << std::endl;
-    // /*status = */pclose(fp);
-    // if (status == -1)
-    // {
-    //     std::cerr << "Error while closing convertion process" << std::endl;
-    // }
     c.terminate();
 
     std::string fileName = "/root/" + name + ".ovpn";
@@ -234,8 +200,10 @@ void OVPNRunner::generateName()
         '5', '6', '7', '8', '9', '0'};
 
     std::string result;
-    for (size_t i = 0; i < 20; ++i)
-        result += randomm[random() % 36];
+    
+    std::srand(std::time(nullptr)); // use current time as seed for random generator
+    for (size_t i = 0; i < 10; ++i)
+        result += randomm[std::rand() % 36];
 
     userName = result;
 }
@@ -367,16 +335,6 @@ int main()
     std::string input = j.dump();
     VpnMsgHandler handler;
     handler.handle(input);
-    // handler.handle(input);
-    // std::vector<OptionalUrl> ipList;
-    // ipList = converter.getOptionalUrlList(context);
-    // for (auto elem : ipList)
-    // {
-    //     for (auto ip : elem.ipList)
-    //     {
-    //         std::cout << ip << std::endl;
-    //     }
-    // }
 
     std::string output = handler.reply();
     std::cout << output;
