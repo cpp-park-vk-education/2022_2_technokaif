@@ -8,6 +8,7 @@
 #include <boost/asio.hpp>
 #include <json.hpp>
 #include <boost/regex.hpp>
+#include <boost/process.hpp>
 #include <boost/filesystem.hpp>
 // #include <boost/log.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -56,11 +57,10 @@ class MakeConfigurationFiles {
 public:
     void setMode(VPNMode);
     void setIpList(std::vector<std::string>);
-    Config MakeClientConfig(std::string name);
+    Config* MakeClientConfig(std::string name);
     void DeleteClientConfig(std::string name);
 
 private:
-    void configurationLogic();
     VPNMode vpnMode;
     std::vector<std::string> optionalIpList;
 };
