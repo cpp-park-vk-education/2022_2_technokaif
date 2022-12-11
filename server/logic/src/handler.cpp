@@ -1,35 +1,46 @@
 #include <handler.hpp>
 
-Config::Config() {
-    file_ptr.open("config.cfg");
-}
+// -------------<Config>-----------
 
-Config::~Config() {
-    file_ptr.close();
-}
-
-Config::Config(const Config& obj) {
-    // TODO(Ilya): конструктор копирования конфига
-    this->buffer = obj.buffer;
-}
-
-Config::Config(std::string fileName) {
-    // TODO(Ilya): конструктор конфига, принимающий на вход имя файла конфига
-
-    file_ptr.open(fileName);
-}
-
-std::string& Config::read() {
+int Config::read() {
     // TODO(Ilya): чтение форматированной строки конфига
 
-    file_ptr >> buffer;
-    return buffer;
+    file_ptr.open(_file_name);
+    while (!file_ptr.eof()) {
+        file_ptr >> buffer;
+    }
+
+    if (file_ptr.bad()) {
+        std::cerr << "Bad config reading";
+        return EXIT_FAILURE;
+        file_ptr.close();
+    }
+
+    file_ptr.close();
+    return EXIT_SUCCESS;
 }
 
-void Config::write(const std::string&) {
+int Config::writeIpList(const std::string& ipList) {
     // TODO(Ilya): запись строки(конфига) в объект класса конфига
+
+    file_ptr.open(_file_name);
+    std::string buffer;
+    while (std::getline(file_ptr, buffer) && buffer.compare("verb 3")) { }
+    std::streampos pos = file_ptr.tellg();
+    file_ptr.seekp(pos);
+    file_ptr << ipList;
+
+    if (file_ptr.bad()) {
+        std::cerr << "Bad config writing";
+        return EXIT_FAILURE;
+        file_ptr.close();
+    }
+
+    file_ptr.close();
+    return EXIT_SUCCESS;
 }
 
+// -------------<UrlToIpConverter>-----------
 
 void UrlToIpConverter::runConvert() {
     // TODO(Ilya): метод, реализующий конвертацию url ссылок в ip лист
@@ -45,29 +56,42 @@ void UrlToIpConverter::runConvert() {
 std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
     // TODO(Ilya): метод, запрашивающий по url ip лист
 
-    boost::regex pattern("/^(?:https?:\\/\\/)?(?:www\\.)?([^/]+)/");
-    boost::smatch result;
-    bool isMatchFound = boost::regex_match(url, result, pattern); 
+    // boost::regex pattern("/^(?:https?:\\/\\/)?(?:www\\.)?([^/]+)/");
+    // boost::smatch result;
+    // bool isMatchFound = boost::regex_match(url, result, pattern); 
     std::string host;
-    if (isMatchFound) { 
-        host = result[0];
+    const std::string header = "https://";
+    int pos = url.find(header);
+    if (pos == 0) {
+        host = url.substr(header.size());
+    } else {
+        host = url;
     }
+    // if (isMatchFound) { 
+    //     host = result[0];
+    // }
 
     std::vector<std::string> ipVector;
-    FILE* fp;
-    int status;
-    const std::string nslookup = "nslookup google.com | grep -oE '\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b";
+    // FILE* fp;
+    // int status;
+    std::string nslookup = "nslookup ";
+    nslookup += (host + " | grep -oE '\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b' > ip.md");
     const char* command = const_cast<char*>(nslookup.c_str());
-    fp = popen(command, "r");
-    if (fp == NULL) {
+    // fp = popen(command, "r");
+    std::system(command); 
+    // if (fp == NULL) {
+    //     std::cerr << "Error processing url in ip list" << std::endl;
+    // }
+
+    std::ifstream f_ptr("ip.md");
+    if (f_ptr.bad()) {
         std::cerr << "Error processing url in ip list" << std::endl;
     }
 
-    int MAX_BUFFER_SIZE = 30;
     int counter = 0;
-    while (!feof(fp)) {
+    while (!f_ptr.eof()) {
         char buf[MAX_BUFFER_SIZE];
-        fgets(buf, MAX_BUFFER_SIZE, fp);
+        f_ptr.getline(buf, MAX_BUFFER_SIZE);
         if (counter > 1) {
             ipVector.push_back(std::string(buf));
         }
@@ -75,11 +99,13 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
         ++counter;
     }
 
-
-    status = pclose(fp);
-    if (status == -1) {
-        std::cerr << "Error while closing convertion process" << std::endl;
+    if (f_ptr.bad()) {
+        std::cerr << "Error processing url in ip list" << std::endl;
     }
+    // status = pclose(fp);
+    // if (status == -1) {
+    //     std::cerr << "Error while closing convertion process" << std::endl;
+    // }
 
     return ipVector;
 }
@@ -88,30 +114,61 @@ std::vector<OptionalUrl> UrlToIpConverter::getOptionalUrlList(VPNContext vpnCont
     // TODO(Ilya): метод, возвращающий вектор структур из ip листа и url
     // (т.е структуру со всеми необходимыми данными)
 
+    vpnContext = vpnContext_;
     runConvert();
     return vpnList;
 }
 
+// -------------<MakeConfigurationFiles>-----------
 
-Config MakeConfigurationFiles::MakeServerConfig() {
-    // TODO(Ilya): создание конфига сервера
-
-    return Config("config");
-}
-
-Config MakeConfigurationFiles::MakeClientConfig() {
+Config MakeConfigurationFiles::MakeClientConfig(std::string name) {
     // TODO(Ilya): создание конфига клиента
 
+
     return Config("config");
 }
 
+void MakeConfigurationFiles::setMode(VPNMode vpnmode_) {
+    vpnMode = vpnmode_;
+}
+
+void MakeConfigurationFiles::setIpList(std::vector<std::string> ipList) {
+    optionalIpList = ipList;
+}
+
+void MakeConfigurationFiles::DeleteClientConfig(std::string name) {
+
+}
+
+// -------------<OVPNRunner>-----------
+
+void OVPNRunner::generateName() {
+    static char randomm[] = {
+        'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g',
+        'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '1', '2', '3', '4',
+        '5', '6', '7', '8', '9', '0'
+    };
+ 
+    std::string result;
+    for(size_t i = 0; i < 20; ++i)
+        result += randomm[random() % 36];
+ 
+    userName = result;
+}
 
 OVPNRunner::OVPNRunner() {
-    // TODO(Ilya): конструктор класса, работающего поверх OpenVPN
+    generateName();
 }
 
 int OVPNRunner::RunOpenVPNServer() {
     // TODO(Ilya): запуск сервера OpenVPN
+
+
+    return EXIT_SUCCESS;
+}
+
+int OVPNRunner::RunOpenVPNServerWithOptions(std::vector<std::string>) {
+    // TODO(Ilya): запуск сервера OpenVPN с параметрами
 
     return EXIT_SUCCESS;
 }
@@ -119,20 +176,18 @@ int OVPNRunner::RunOpenVPNServer() {
 int OVPNRunner::StopOpenVPNServer() {
     // TODO(Ilya): остановка сервера OpenVPN
 
+    confFilesMaker.setMode(stopped);
+    confFilesMaker.DeleteClientConfig(userName);
     return EXIT_SUCCESS;
 }
 
-Config OVPNRunner::GetClientConfig() {
+std::string OVPNRunner::GetClientConfig() {
     // TODO(Ilya): получение конфига клиента
 
-    return clientConfig;
+    return clientConfig->getConfig();
 }
 
-Config OVPNRunner::GetServerConfig() {
-    // TODO(Ilya): получение конфига сервера
-
-    return serverConfig;
-}
+// -------------<VpnMsgHandler>-----------
 
 void VpnMsgHandler::handle(std::string msgBuffer) {
     // TODO(Ilya): хэндлер, принимающий буффер с url в виде бит с сервера
@@ -140,8 +195,8 @@ void VpnMsgHandler::handle(std::string msgBuffer) {
     inputAnalyze(msgBuffer);
 }
 
-Config VpnMsgHandler::reply() {
-    // TODO(Ilya): проброс клиентского конфига обратно на сервера
+std::string VpnMsgHandler::reply() {
+    // TODO(Ilya): проброс клиентского конфига обратно на сервер
 
     return ovpnRunner.GetClientConfig();
 }
@@ -151,6 +206,24 @@ void VpnMsgHandler::inputAnalyze(std::string msgBuffer) {
 
     convertVpnMsgToVpnContext(msgBuffer);
     convertVpnContextToVpnList();
+}
+
+void VpnMsgHandler::convertVpnListToIpList() {
+    for (auto ipL : this->_vpnList) {
+        for (auto ip : ipL.ipList) {
+           _ipList.push_back(ip);
+        }
+    }
+}
+
+void VpnMsgHandler::logic() {
+    if (this->_vpnContext.state == stopped) {
+        ovpnRunner.StopOpenVPNServer();
+    } else if (this->_vpnContext.state == runTotal) {
+        ovpnRunner.RunOpenVPNServer();
+    } else {
+        ovpnRunner.RunOpenVPNServerWithOptions(_ipList);
+    }
 }
 
 void VpnMsgHandler::setVpnContext(const VPNContext& vpnContext_) {
@@ -175,8 +248,10 @@ void VpnMsgHandler::convertVpnContextToVpnList() {
     _vpnList = urlConverter.getOptionalUrlList(_vpnContext);
 }
 
+
+
 int main() {
-    VPNContext context = {runOptional, {"google.com", "https://google.com"}};
+    VPNContext context = {runOptional, {"google.com", "https://github.io"}};
     UrlToIpConverter converter;
     std::vector<OptionalUrl> ipList;
     ipList = converter.getOptionalUrlList(context);

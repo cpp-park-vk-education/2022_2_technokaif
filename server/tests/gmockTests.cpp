@@ -6,7 +6,7 @@
 class MockHandler : public IHandler {
 public:
     MOCK_METHOD1(handle, void(std::string buffer));
-    MOCK_METHOD0(reply, Config());
+    MOCK_METHOD0(reply, std::string());
 };
 
 TEST(ServerHandlerTest, HandlerStartCheck) {
