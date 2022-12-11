@@ -1,5 +1,5 @@
-#ifndef USER_H
-#define USER_H
+#ifndef _USER_H_
+#define _USER_H_
 
 #include "tools/utils.h"
 
@@ -41,4 +41,4 @@ class User : public IUser {
     std::string password;
     std::string email;
 };
-#endif  // USER_H
+#endif  // _USER_H_

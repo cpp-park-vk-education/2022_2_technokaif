@@ -1,7 +1,8 @@
-#include "../include/windows/base.h"
+#include "../../include/gui/base.h"
+
 
 Base::Base(QWidget *parent)
-    : QWidget(parent) {
+    : QWidget(parent), context(), client(context, ip, port) {
 
     setFixedHeight(600);
     setFixedWidth(350);
@@ -42,14 +43,17 @@ Base::Base(QWidget *parent)
 
     configBtn = new QPushButton("Config", this);
     configBtn->setStyleSheet("height: 40px; font-size: 20px;");
+    configBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(configBtn);
 
     mainBtn = new QPushButton("Main", this);
     mainBtn->setStyleSheet("height: 40px; font-size: 20px;");
+    mainBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(mainBtn);
 
     profileBtn = new QPushButton("User", this);
     profileBtn->setStyleSheet("height: 40px; font-size: 20px;");
+    profileBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(profileBtn);
 
     layout->addItem(footerBar);
@@ -93,20 +97,20 @@ void Base::profileClicked() {
 
 void Base::runChanged(bool checked) {
     if (checked) {
-
-        // client.connect()
-
         state = RunStatus::RUNNING;
         
+        std::vector<std::string> urlList;
         if (mode == VPNMode::OPTIONAL) {
-            std::vector<std::string> urlList = getUrlList();
+            urlList = getUrlList();
         }
-        
-        // client.sendData()
+        client.setVPNContext(state, mode, urlList);
+
+        client.connect();
+        client.sendData();
+        client.getData();
 
     } else {
-        // client.closeConnection()
-
+        client.stopConnection();
         state = RunStatus::STOPPED;
     }
 }

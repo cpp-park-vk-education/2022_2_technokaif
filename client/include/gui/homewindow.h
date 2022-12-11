@@ -17,8 +17,7 @@ class IHomeWidget {
     virtual void modeToggled(bool checked) = 0;
 };
 
-class HomeWindow : public QWidget, public IHomeWidget
-{
+class HomeWindow : public QWidget, public IHomeWidget {
     Q_OBJECT
 
 public:

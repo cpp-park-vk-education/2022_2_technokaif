@@ -1,6 +1,8 @@
 #ifndef VPNCONTEXT_H
 #define VPNCONTEXT_H
 
+#include "utils.h"
+
 enum VPNMode {
     TOTAL,
     OPTIONAL
@@ -12,7 +14,8 @@ enum RunStatus {
 };
 
 struct VPNContext {
-    VPNMode state;
+    VPNMode mode;
+    RunStatus state;
     std::vector<std::string> urlList;
 };
 

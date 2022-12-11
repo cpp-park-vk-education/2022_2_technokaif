@@ -1,4 +1,5 @@
-#include "../include/windows/configwindow.h"
+#include "../../include/gui/configwindow.h"
+
 
 ConfigWindow::ConfigWindow(QWidget *parent) :
                             QWidget(parent) {
@@ -22,11 +23,13 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
 
     deleteBtn = new QPushButton("Delete", this);
     deleteBtn->setStyleSheet("font-size: 16px;");
+    deleteBtn->setCursor(Qt::PointingHandCursor);
     deleteBtn->setFixedWidth(80);
     buttons->addWidget(deleteBtn);
 
     clearBtn = new QPushButton("Clear", this);
     clearBtn->setStyleSheet("font-size: 16px;");
+    clearBtn->setCursor(Qt::PointingHandCursor);
     clearBtn->setFixedWidth(80);
 
     buttons->addWidget(clearBtn);
@@ -40,6 +43,7 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
 
     addBtn = new QPushButton("Add", this);
     addBtn->setStyleSheet("font-size: 16px;");
+    addBtn->setCursor(Qt::PointingHandCursor);
     addBtn->setFixedWidth(80);
     inputLayout->addWidget(addBtn);
 
@@ -91,6 +95,8 @@ void ConfigWindow::addClicked() {
     }
 
     domainList->addItem(domain);
+
+    domainInput->setText("");
 }
 
 void ConfigWindow::clearClicked() {

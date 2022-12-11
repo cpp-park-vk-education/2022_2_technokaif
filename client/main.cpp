@@ -1,7 +1,17 @@
-#include "network/include/client.h"
+#include "include/gui/base.h"
 
-int main() {
-    Client client;
+#include <QApplication>
+#include <QLabel>
+#include <QIcon>
 
-    return 0;
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+
+    Base w;
+    w.setWindowTitle("Rabbit Hole");
+    w.setWindowIcon(QIcon("img/rabbit.png"));
+
+    w.show();
+
+    return a.exec();
 }

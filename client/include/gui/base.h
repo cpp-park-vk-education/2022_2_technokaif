@@ -1,12 +1,13 @@
 #ifndef BASE_H
 #define BASE_H
 
+#include "../tools/utils.h"
+#include "../network/client.h"
+
 #include <QWidget>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-
-#include "../tools/utils.h"
 
 #include "homewindow.h"
 #include "configwindow.h"
@@ -15,8 +16,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Base; }
 QT_END_NAMESPACE
 
-class Base : public QWidget
-{
+class Base : public QWidget {
     Q_OBJECT
 
 public:
@@ -32,6 +32,12 @@ private slots:
     void modeChanged(bool checked);
 
 private:
+    boost::asio::io_context context;  // ?
+    const std::string ip = "51.250.94.232";
+    const uint port = 2020;
+
+    Client client;
+
     VPNMode mode = VPNMode::TOTAL;
     RunStatus state = RunStatus::STOPPED;
 

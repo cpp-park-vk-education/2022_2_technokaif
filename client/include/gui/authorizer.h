@@ -1,5 +1,5 @@
-#ifndef AUTH_H
-#define AUTH_H
+#ifndef _AUTH_H_
+#define _AUTH_H_
 
 #include "../tools/utils.h"
 #include "../user.h"
