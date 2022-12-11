@@ -1,14 +1,16 @@
 #pragma once
 
-#include "utils.h"
-
 enum VPNMode {
-    RunTotal = 1,
-    RunOptional,
-    Stopped
+    TOTAL,
+    OPTIONAL
+};
+
+enum RunStatus {
+    RUNNING,
+    STOPPED
 };
 
 struct VPNContext {
-    VPNMode state = VPNMode::RunTotal;
+    VPNMode state;
     std::vector<std::string> urlList;
 };

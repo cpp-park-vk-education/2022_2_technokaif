@@ -1,7 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "include/user.h"
+#include "../user.h"
+#include "../tools/utils.h"
 
 #include <QWidget>
 #include <QPushButton>
@@ -15,9 +16,9 @@ QT_END_NAMESPACE
 class IUserSettings {
  public:
     virtual void changeSettings() = 0;
-    virtual void on_BtnSave_clicked() = 0;
-    virtual void on_BtnLogout_clicked() = 0;
-    virtual void on_BtnBack_clicked() = 0;
+    virtual void saveClicked() = 0;
+    virtual void logoutClicked() = 0;
+    virtual void backClicked() = 0;
 };
 
 class UserSettings : public QWidget, public IUserSettings {
@@ -28,9 +29,9 @@ class UserSettings : public QWidget, public IUserSettings {
     ~Widget();
 
  private slots:
-    void on_BtnSave_clicked() override;
-    void on_BtnLogout_clicked() override;
-    void on_BtnBack_clicked() const override;
+    void saveClicked() override;
+    void logoutClicked() override;
+    void backClicked() const override;
 
  private:
     void changeSettings() override;

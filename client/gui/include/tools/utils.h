@@ -1,5 +1,9 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
-#include <iostream>
-#include <string>
 #include <vector>
+#include <string>
+
+#include "vpncontext.h"
+
+#endif // UTILS_H

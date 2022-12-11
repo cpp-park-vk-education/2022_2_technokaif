@@ -1,8 +1,8 @@
 #ifndef AUTH_H
 #define AUTH_H
 
-#include "tools/utils.h"
-#include "include/user.h"
+#include "../tools/utils.h"
+#include "../user.h"
 
 #include <QWidget>
 #include <QPushButton>
