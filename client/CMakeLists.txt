@@ -1,20 +1,50 @@
-project(client)
+cmake_minimum_required(VERSION 3.5)
 
-SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable")
+project(client VERSION 0.1 LANGUAGES CXX)
 
-# set(BOOST_INCLUDE_DIRS "/usr/local/boost_1_77_0")
-add_subdirectory(network)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# include_directories(${NETWORK_INCLUDE_DIRS}  ${BOOST_INCLUDE_DIRS})
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-include_directories(${NETWORK_INCLUDE_DIRS})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-add_executable(${PROJECT_NAME} main.cpp)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov -lboost_thread -lpthread")
+find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${NETWORK_LIBRARIES} ${CMAKE_EXE_LINKER_FLAGS})
+set(PROJECT_SOURCES
+    main.cpp
 
-enable_testing()
-# add_subdirectory(tests)
+    src/gui/base.cpp
+    src/gui/homewindow.cpp
+    src/gui/configwindow.cpp
+    src/network/client.cpp
+
+    include/tools/json.hpp
+    include/tools/utils.h
+
+    include/gui/base.h
+    include/gui/homewindow.h
+    include/gui/configwindow.h
+    include/network/client.h
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(client MANUAL_FINALIZATION ${PROJECT_SOURCES})
+else()
+    if(ANDROID)
+        add_library(client SHARED ${PROJECT_SOURCES})
+    else()
+        add_executable(client ${PROJECT_SOURCES})
+    endif()
+endif()
+
+target_link_libraries(client PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(client)
+endif()

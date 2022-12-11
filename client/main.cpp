@@ -1,25 +1,17 @@
-#include "network/include/client.h"
+#include "include/gui/base.h"
 
-int main() {
-    boost::asio::io_context context;
-    // std::string ip = "127.0.0.1";
-    // unsigned int port = 80;
+#include <QApplication>
+#include <QLabel>
+#include <QIcon>
 
-    std::string ip = "51.250.94.232";
-    unsigned int port = 2020;
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
 
-    Client client(context, ip, port);
-    client.getVPNContext();  // from console
-    client.connect();
+    Base w;
+    w.setWindowTitle("Rabbit Hole");
+    w.setWindowIcon(QIcon("img/rabbit.png"));
 
-    while (!client.isStateStop()) {
-        client.sendData();
-        client.getData();
-        client.getVPNContext();
-        client.connect();
-    }
-    client.sendData();
-    client.stopConnection();
+    w.show();
 
-    return 0;
+    return a.exec();
 }
