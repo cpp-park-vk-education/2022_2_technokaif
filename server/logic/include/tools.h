@@ -12,7 +12,7 @@ enum VPNMode {
 
 struct VPNContext {
     VPNMode state;
-    std::vector<std::string> urlList; 
+    std::vector<std::string> urlList;
 };
 
 struct OptionalUrl {
