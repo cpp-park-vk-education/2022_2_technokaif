@@ -66,23 +66,23 @@ HomeWindow::HomeWindow(QWidget *parent) :
     connect(modeBtn, &QCheckBox::toggled, this, &HomeWindow::modeToggled);
 }
 
-HomeWindow::~HomeWindow()
-{
-    delete layout;
-    delete runLayout;
-    delete statusLayout;
+HomeWindow::~HomeWindow() {
+   delete userIp;
+   delete ipLabel;
+   delete ipLayout;
 
-    delete runBtn;
-    delete vpnStatus;
+   delete lazyMode;
+   delete modeBtn;
+   delete fullMode;
+   delete modeLayout;
 
-    delete modeLayout;
-    delete lazyMode;
-    delete modeBtn;
-    delete fullMode;
+   delete vpnStatus;
+   delete statusLayout;
+   delete runBtn;
 
-    delete ipLayout;
-    delete ipLabel;
-    delete userIp;
+
+   delete runLayout;
+   delete layout;
 }
 
 void HomeWindow::runToggled(bool checked) {

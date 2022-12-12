@@ -59,20 +59,20 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
 }
 
 ConfigWindow::~ConfigWindow() {
-    delete layout;
-    delete header;
+   delete errorField;
+    
+   delete addBtn;
+   delete domainInput;
+   delete inputLayout;
+    
+   delete clearBtn;
+   delete deleteBtn;
+   delete buttons;
 
-    delete domainList;
+   delete domainList;
 
-    delete buttons;
-    delete deleteBtn;
-    delete clearBtn;
-
-    delete inputLayout;
-    delete domainInput;
-    delete addBtn;
-
-    delete errorField;
+   delete header;
+   delete layout;
 }
 
 void ConfigWindow::addClicked() {
