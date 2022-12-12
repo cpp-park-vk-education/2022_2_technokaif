@@ -47,9 +47,8 @@ void Client::sendData() {
     json j;
 
     j["state"] = _context.state;
-    j["mode"] = _context.mode;
 
-    if (_context.mode == VPNMode::OPTIONAL) {
+    if (_context.state == RunStatus::OPTIONAL) {
         for (size_t i = 0; i < _context.urlList.size(); ++i) {
             j["urlList"].push_back(_context.urlList[i]);
         }
@@ -94,9 +93,8 @@ Client::Client(boost::asio::io_context& context, std::string ip, unsigned int po
     _inputStream(context, STDIN_FILENO), _socket(context), _ip(ip), _port(port) {}
 
 
-void Client::setVPNContext(RunStatus state, VPNMode mode, const std::vector<std::string>& urls) {
+void Client::setVPNContext(RunStatus state, const std::vector<std::string>& urls) {
     _context.state = state;
-    _context.mode = mode;
     _context.urlList = urls;
 }
 

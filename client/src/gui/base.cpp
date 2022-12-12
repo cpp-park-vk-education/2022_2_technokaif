@@ -96,30 +96,27 @@ void Base::profileClicked() {
 }
 
 void Base::runChanged(bool checked) {
-    if (checked) {
-        state = RunStatus::RUNNING;
-        
-        std::vector<std::string> urlList;
-        if (mode == VPNMode::OPTIONAL) {
-            urlList = getUrlList();
-        }
-        client.setVPNContext(state, mode, urlList);
-
-        client.connect();
-        client.sendData();
-        client.getData();
-
-    } else {
-        client.stopConnection();
+    if (!checked) {
         state = RunStatus::STOPPED;
     }
+
+    std::vector<std::string> urlList;
+
+    if (state == RunStatus::OPTIONAL) {
+        urlList = getUrlList();
+    }
+    client.setVPNContext(state, urlList);
+
+    client.connect();
+    client.sendData();
+    client.getData();
 }
 
 void Base::modeChanged(bool checked) {
     if (checked) {
-        mode = VPNMode::OPTIONAL;
+        state = RunStatus::OPTIONAL;
     } else {
-        mode = VPNMode::TOTAL;
+        state = RunStatus::TOTAL;
     }
 }
 

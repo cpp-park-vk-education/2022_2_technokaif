@@ -9,18 +9,14 @@
 #include <boost/asio.hpp>
 #include "json.hpp"
 
-enum VPNMode {
-    TOTAL,
-    OPTIONAL
-};
 
 enum RunStatus {
-    RUNNING,
+    TOTAL,
+    OPTIONAL,
     STOPPED
 };
 
 struct VPNContext {
-    VPNMode mode;
     RunStatus state;
     std::vector<std::string> urlList;
 };

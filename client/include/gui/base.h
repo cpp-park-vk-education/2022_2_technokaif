@@ -38,8 +38,7 @@ private:
 
     Client client;
 
-    VPNMode mode = VPNMode::TOTAL;
-    RunStatus state = RunStatus::STOPPED;
+    RunStatus state = RunStatus::TOTAL;
 
     std::vector<std::string> getUrlList();
 
