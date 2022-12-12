@@ -8,9 +8,7 @@ using json = nlohmann::json;
 // ----------------------------- OpenVPNClient -------------------------------
 
 OpenVPNClient::~OpenVPNClient() {
-    if (pid != 0) {
-        kill(pid, SIGKILL);
-    }
+    system("sudo killall openvpn");
 }
 
 void OpenVPNClient::updateConfig(const std::string& cfg) {
@@ -33,9 +31,7 @@ void OpenVPNClient::runOpenVPN() {
 }
 
 void OpenVPNClient::stopOpenVPN()  {
-    if (pid != -1) {
-        kill(pid, SIGKILL);
-    }
+    system("sudo killall openvpn");
 }
 
 
@@ -57,12 +53,18 @@ void Client::sendData() {
     _socket.send(boost::asio::buffer(j.dump()));
 }
 
-void Client::getData() {
-    std::string input;
-    input.resize(16384);
-    _socket.receive(boost::asio::buffer(input, 16384));
 
-    std::cout << "input: " << input << std::endl;
+void Client::getData() {
+    boost::asio::streambuf b;
+    boost::asio::read_until(_socket, b, '}');
+    std::istream is(&b);
+    std::string input;
+
+    std::copy(std::istreambuf_iterator<char>(is),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(input));
+
+    std::cout << input << std::endl;
 
     json j = json::parse(input);
 
