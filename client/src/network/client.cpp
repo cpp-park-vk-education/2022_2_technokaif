@@ -32,7 +32,7 @@ void OpenVPNClient::runOpenVPN() {
     std::cout << "pid = " << pid << std::endl;
 }
 
-void OpenVPNClient::stopOpenVPN() {
+void OpenVPNClient::stopOpenVPN()  {
     if (pid != -1) {
         kill(pid, SIGKILL);
     }
@@ -72,8 +72,8 @@ void Client::getData() {
         config += '\n';
     }
 
-    oVPNclient.updateConfig(config);
-    oVPNclient.runOpenVPN();
+    _oVPNclient.updateConfig(config);
+    _oVPNclient.runOpenVPN();
 }
 
 Client::Client(boost::asio::io_context& context, std::string ip, unsigned int port) :
@@ -101,6 +101,8 @@ void Client::stopConnection() {
 
     _inputStream.close(); 
     _socket.close();
+    
+    _oVPNclient.stopOpenVPN();
 
     std::cout << "connection close" << std::endl;
 }
