@@ -13,6 +13,8 @@
 #include <ctime>
 #include <chrono>
 #include <thread>
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream_buffer.hpp>
 // #include <boost/log.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <string>
