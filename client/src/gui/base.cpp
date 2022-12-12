@@ -67,20 +67,20 @@ Base::Base(QWidget *parent)
 }
 
 Base::~Base() {
-    delete layout;
-
-    delete header;
     delete logo;
     delete appName;
+    delete header;
 
-    delete pages;
     delete homePage;
     delete configPage;
+    delete pages;
 
-    delete footerBar;
     delete configBtn;
     delete mainBtn;
     delete profileBtn;
+    delete footerBar;
+
+    delete layout;
 }
 
 void Base::mainClicked() {
