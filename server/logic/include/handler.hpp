@@ -11,6 +11,8 @@
 #include <boost/process.hpp>
 #include <boost/filesystem.hpp>
 #include <ctime>
+#include <chrono>
+#include <thread>
 // #include <boost/log.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <string>
@@ -27,6 +29,7 @@ public:
 
     int writeIpList(const std::string& ipList);
     int read();
+    int preRead();
     std::string getConfig() { return buffer; }
 
 private:
