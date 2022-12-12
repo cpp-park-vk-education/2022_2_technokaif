@@ -34,7 +34,7 @@ public:
 
     void sendData();
     void getData();
-    void setVPNContext(RunStatus state, VPNMode mode, const std::vector<std::string>& urls);  // from console
+    void setVPNContext(RunStatus state, const std::vector<std::string>& urls);  // from console
     void connect();
     void stopConnection();
     bool isStateStop() { return _context.state == RunStatus::STOPPED; }

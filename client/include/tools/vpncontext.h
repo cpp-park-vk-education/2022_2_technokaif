@@ -3,13 +3,9 @@
 
 #include "utils.h"
 
-enum VPNMode {
-    TOTAL,
-    OPTIONAL
-};
-
 enum RunStatus {
-    RUNNING,
+    TOTAL,
+    OPTIONAL,
     STOPPED
 };
 
