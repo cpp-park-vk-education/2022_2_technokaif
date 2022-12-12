@@ -2,32 +2,44 @@
 
 // -------------<Config>-----------
 
-int Config::read()
-{
-    // TODO(Ilya): чтение форматированной строки конфига
-
+int Config::preRead() {
     file_ptr.open(_file_name);
     if (!file_ptr.is_open()) {
         std::cerr << "Bad config reading";
         return EXIT_FAILURE;
     }
 
-    nlohmann::json j;
     std::string buf;
-    while (std::getline(file_ptr, buf))
-    {
-        j["config"].push_back(buf);
+    this->buffer = "";
+    while (std::getline(file_ptr, buf)) {
+        buffer += (buf + "\n");
     }
 
-    if (file_ptr.bad())
-    {
+    if (file_ptr.bad()) {
         std::cerr << "Bad config reading";
         return EXIT_FAILURE;
         file_ptr.close();
     }
 
-    buffer = j.dump();
     file_ptr.close();
+    return EXIT_SUCCESS;
+}
+
+int Config::read() {
+    // TODO(Ilya): чтение форматированной строки конфига
+
+    std::stringstream ss;
+    for (auto iter = buffer.cbegin(); iter != buffer.cend(); ++iter) {
+        ss << *iter;
+    }
+
+    nlohmann::json j;
+    std::string buf;
+    while (std::getline(ss, buf)) {
+        j["config"].push_back(buf);
+    }
+    buffer = j.dump();
+
     return EXIT_SUCCESS;
 }
 
@@ -35,32 +47,23 @@ int Config::writeIpList(const std::string &ipList)
 {
     // TODO(Ilya): запись строки(конфига) в объект класса конфига
 
-    file_ptr.open(_file_name);
-    if (!file_ptr.is_open()) {
-        std::cerr << "Bad config reading";
-        return EXIT_FAILURE;
+    std::stringstream ss;
+    for (auto iter = buffer.cbegin(); iter != buffer.cend(); ++iter) {
+        ss << *iter;
     }
-    std::string buffer;
-    while (std::getline(file_ptr, buffer) && buffer.compare("verb 3")) { }
-    std::streampos pos = file_ptr.tellg();
-    buffer.clear();
+
+    std::string buf;
+    std::string startBuffer = "";
+    while (std::getline(ss, buf) && (buf.compare("verb 3") != 0)) {
+        startBuffer += (buf + "\n");
+    }
+
     std::string endBuffer = "";
-    while (std::getline(file_ptr, buffer)) {
-        endBuffer += buffer;
-        buffer.clear();
+    while (std::getline(ss, buf)) {
+        endBuffer += (buf + "\n");
     }
 
-    file_ptr.seekp(pos);
-    file_ptr << ipList;
-    file_ptr << endBuffer;
-
-    if (file_ptr.bad()) {
-        std::cerr << "Bad config writing";
-        return EXIT_FAILURE;
-        file_ptr.close();
-    }
-
-    file_ptr.close();
+    buffer = startBuffer + ipList + endBuffer;
     return EXIT_SUCCESS;
 }
 
@@ -113,16 +116,14 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url)
     {
         char buf[MAX_BUFFER_SIZE];
         f_ptr.getline(buf, MAX_BUFFER_SIZE);
-        if (counter > 1)
-        {
+        if (counter > 1) {
             ipVector.push_back(std::string(buf));
         }
 
         ++counter;
     }
 
-    if (f_ptr.bad())
-    {
+    if (f_ptr.bad()) {
         std::cerr << "Error processing url in ip list" << std::endl;
     }
 
@@ -144,28 +145,37 @@ std::vector<OptionalUrl> UrlToIpConverter::getOptionalUrlList(VPNContext vpnCont
 Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
     FILE *fp;
     int status = 0;
-    std::string com = "bash /2022_2_technokaif/server/logic/src/openVpnRun.sh";
+    std::string com = "bash /home/stepan/project/2022_2_technokaif/server/logic/src/openVpnRun.sh";
     char *command = const_cast<char *>(com.c_str());
     boost::process::opstream in;
     boost::process::child c(command, boost::process::std_in < in);
+
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(2000ms);
 
     com = "1";
     command = const_cast<char *>(com.c_str());
 
     in << command << std::endl;
+    std::this_thread::sleep_for(2000ms);
 
     command = const_cast<char *>(name.c_str());
     in << command << std::endl;
+    std::this_thread::sleep_for(5000ms);
+
     c.terminate();
 
     std::string fileName = "/root/" + name + ".ovpn";
 
     Config *clientConfig = new Config(fileName);
-    if (vpnMode == runOptional)
-    {
+    clientConfig->preRead();
+    if (vpnMode == runOptional) {
         std::string ipList = "route-nopull\n";
-        for (auto ip : optionalIpList)
-        {
+        for (auto ip : optionalIpList) {
+            if (ip == "") {
+                continue;
+            }
+
             ipList += ("route " + ip + " 255.255.255.255\n");
         }
 
@@ -273,54 +283,45 @@ void VpnMsgHandler::inputAnalyze(std::string msgBuffer)
     logic();
 }
 
-void VpnMsgHandler::convertVpnListToIpList()
-{
-    for (auto ipL : this->_vpnList)
-    {
-        for (auto ip : ipL.ipList)
-        {
+void VpnMsgHandler::convertVpnListToIpList() {
+    for (auto ipL : this->_vpnList) {
+        for (auto ip : ipL.ipList) {
             _ipList.push_back(ip);
         }
     }
 }
 
-void VpnMsgHandler::logic()
-{
-    if (this->_vpnContext.state == stopped)
-    {
+void VpnMsgHandler::logic() {
+    if (this->_vpnContext.state == stopped) {
         ovpnRunner.StopOpenVPNServer();
     }
-    else if (this->_vpnContext.state == runTotal)
-    {
+    else if (this->_vpnContext.state == runTotal) {
         ovpnRunner.RunOpenVPNServer();
     }
-    else
-    {
+    else {
         ovpnRunner.RunOpenVPNServerWithOptions(_ipList);
     }
 }
 
-void VpnMsgHandler::setVpnContext(const VPNContext &vpnContext_)
-{
+void VpnMsgHandler::setVpnContext(const VPNContext &vpnContext_) {
     this->_vpnContext = vpnContext_;
 }
 
-void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl> &vpnList_)
-{
+void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl> &vpnList_) {
     this->_vpnList = vpnList_;
 }
 
-void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg)
-{
+void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg) {
     // TODO(Ilya): метод конвертации буфера с сервера в VPNContext
 
     nlohmann::json j = nlohmann::json::parse(vpnMsg);
     _vpnContext.state = j["state"].get<VPNMode>();
-    j["urlList"].get_to<std::vector<std::string>>(_vpnContext.urlList);
+    if (_vpnContext.state == runOptional) {
+        j["urlList"].get_to<std::vector<std::string>>(_vpnContext.urlList);
+    }
 }
 
-void VpnMsgHandler::convertVpnContextToVpnList()
-{
+void VpnMsgHandler::convertVpnContextToVpnList() {
     // TODO(Ilya): метод конвертации VPNContext в вектор наборов из url и Ip листов
 
     _vpnList = urlConverter.getOptionalUrlList(_vpnContext);
