@@ -15,9 +15,10 @@ OpenVPNClient::~OpenVPNClient() {
 }
 
 void OpenVPNClient::updateConfig(const std::string& cfg) {
-    std::fstream out(_configFileName);
+    std::fstream out(_configFileName, std::ios_base::in | std::ios_base::out);
     out.clear();
     out << cfg;
+    out.close();
 }
 
 void OpenVPNClient::runOpenVPN() {

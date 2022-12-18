@@ -98,18 +98,20 @@ void Base::profileClicked() {
 void Base::runChanged(bool checked) {
     if (!checked) {
         state = RunStatus::STOPPED;
+        client.setVPNContext(state, std::vector<std::string>());
+        client.sendData();
+        client.stopConnection();
+    } else {
+        std::vector<std::string> urlList;
+        if (state == RunStatus::OPTIONAL) {
+            urlList = getUrlList();
+        }
+        client.setVPNContext(state, urlList);
+
+        client.connect();
+        client.sendData();
+        client.getData();
     }
-
-    std::vector<std::string> urlList;
-
-    if (state == RunStatus::OPTIONAL) {
-        urlList = getUrlList();
-    }
-    client.setVPNContext(state, urlList);
-
-    client.connect();
-    client.sendData();
-    client.getData();
 }
 
 void Base::modeChanged(bool checked) {
