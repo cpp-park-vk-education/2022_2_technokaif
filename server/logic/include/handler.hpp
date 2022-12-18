@@ -62,12 +62,14 @@ private:
 class MakeConfigurationFiles {
 public:
     void setMode(VPNMode);
+    void setState(RunStatus);
     void setIpList(std::vector<std::string>);
     Config* MakeClientConfig(std::string name);
     void DeleteClientConfig(std::string name);
 
 private:
     VPNMode vpnMode;
+    RunStatus state;
     std::vector<std::string> optionalIpList;
 };
 

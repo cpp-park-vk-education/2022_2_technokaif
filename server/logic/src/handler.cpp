@@ -71,7 +71,8 @@ int Config::writeIpList(const std::string &ipList) {
 
 void UrlToIpConverter::runConvert() {
   // TODO(Ilya): метод, реализующий конвертацию url ссылок в ip лист
-  if (vpnContext.state != runOptional) {
+  
+  if (vpnContext.state != RUNNING || vpnContext.mode != OPTIONAL) {
     return;
   }
 
@@ -159,7 +160,7 @@ Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
 
   Config *clientConfig = new Config(fileName);
   clientConfig->preRead();
-  if (vpnMode == runOptional) {
+  if (state == RUNNING && vpnMode == OPTIONAL) {
     std::string ipList = "route-nopull\n";
     for (auto ip : optionalIpList) {
       if (ip == "") {
@@ -177,6 +178,7 @@ Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
 }
 
 void MakeConfigurationFiles::setMode(VPNMode vpnmode_) { vpnMode = vpnmode_; }
+void MakeConfigurationFiles::setState(RunStatus status) { state = status; }
 
 void MakeConfigurationFiles::setIpList(std::vector<std::string> ipList) {
   optionalIpList = ipList;
@@ -247,7 +249,8 @@ OVPNRunner::OVPNRunner() { generateName(); }
 int OVPNRunner::RunOpenVPNServer() {
   // TODO(Ilya): запуск сервера OpenVPN
 
-  confFilesMaker.setMode(runTotal);
+  confFilesMaker.setMode(TOTAL);
+  confFilesMaker.setState(RUNNING);
   clientConfig = confFilesMaker.MakeClientConfig(userName);
   return EXIT_SUCCESS;
 }
@@ -255,8 +258,8 @@ int OVPNRunner::RunOpenVPNServer() {
 int OVPNRunner::RunOpenVPNServerWithOptions(std::vector<std::string> ipList) {
   // TODO(Ilya): запуск сервера OpenVPN с параметрами
 
-  confFilesMaker.setMode(runOptional);
-  confFilesMaker.setIpList(ipList);
+  confFilesMaker.setMode(OPTIONAL);
+  confFilesMaker.setState(RUNNING);
   clientConfig = confFilesMaker.MakeClientConfig(userName);
   return EXIT_SUCCESS;
 }
@@ -264,8 +267,8 @@ int OVPNRunner::RunOpenVPNServerWithOptions(std::vector<std::string> ipList) {
 int OVPNRunner::StopOpenVPNServer() {
   // TODO(Ilya): остановка сервера OpenVPN
 
-  confFilesMaker.setMode(stopped);
-  confFilesMaker.DeleteClientConfig(userName);
+  confFilesMaker.setState(STOPPED);
+  // confFilesMaker.DeleteClientConfig(userName);
   return EXIT_SUCCESS;
 }
 
@@ -285,7 +288,7 @@ void VpnMsgHandler::handle(std::string msgBuffer) {
 
 std::string VpnMsgHandler::reply() {
   // TODO(Ilya): проброс клиентского конфига обратно на сервер
-  if (_vpnContext.state == stopped) {
+  if (_vpnContext.state == STOPPED) {
     return "";
   }
 
@@ -302,7 +305,7 @@ void VpnMsgHandler::inputAnalyze(std::string msgBuffer) {
 }
 
 void VpnMsgHandler::convertVpnListToIpList() {
-  if (_vpnContext.state != runOptional) {
+  if (_vpnContext.state != RUNNING || _vpnContext.mode != OPTIONAL) {
     return;
   }
 
@@ -314,9 +317,9 @@ void VpnMsgHandler::convertVpnListToIpList() {
 }
 
 void VpnMsgHandler::logic() {
-  if (this->_vpnContext.state == stopped) {
+  if (this->_vpnContext.state == STOPPED) {
     ovpnRunner.StopOpenVPNServer();
-  } else if (this->_vpnContext.state == runTotal) {
+  } else if (this->_vpnContext.mode == TOTAL) {
     ovpnRunner.RunOpenVPNServer();
   } else {
     ovpnRunner.RunOpenVPNServerWithOptions(_ipList);
@@ -335,8 +338,9 @@ void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg) {
   // TODO(Ilya): метод конвертации буфера с сервера в VPNContext
 
   nlohmann::json j = nlohmann::json::parse(vpnMsg);
-  _vpnContext.state = j["state"].get<VPNMode>();
-  if (_vpnContext.state == runOptional) {
+  _vpnContext.mode = j["mode"].get<VPNMode>();
+  _vpnContext.state = j["state"].get<RunStatus>();
+  if (_vpnContext.state == RUNNING && _vpnContext.mode == OPTIONAL) {
     j["urlList"].get_to<std::vector<std::string>>(_vpnContext.urlList);
   }
 }
@@ -345,7 +349,7 @@ void VpnMsgHandler::convertVpnContextToVpnList() {
   // TODO(Ilya): метод конвертации VPNContext в вектор наборов из url и Ip
   // листов
 
-  if (_vpnContext.state != runOptional) {
+  if (_vpnContext.state != RUNNING || _vpnContext.mode != OPTIONAL) {
     return;
   } 
 
@@ -353,10 +357,12 @@ void VpnMsgHandler::convertVpnContextToVpnList() {
 }
 
 int main() {
-  VPNContext context1 = {runOptional, {"yandex.ru", "https://google.com"}};
-  VPNContext context2 = {stopped, {""}};
+  VPNContext context1 = {OPTIONAL, RUNNING, {"yandex.ru", "https://google.com"}};
+  VPNContext context2 = {OPTIONAL, STOPPED, {""}};
 
   nlohmann::json j{};
+
+  j["mode"] = context1.mode;
   j["state"] = context1.state;
   j["urlList"] = context1.urlList;
   std::string input = j.dump();
@@ -366,6 +372,7 @@ int main() {
   std::string output = handler.reply();
   std::cout << output;
 
+  j["mode"] = context1.mode;
   j["state"] = context2.state;
   j["urlList"] = context2.urlList;
   input = j.dump();
