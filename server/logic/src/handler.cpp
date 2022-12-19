@@ -1,5 +1,7 @@
 #include <handler.hpp>
 
+using namespace std::chrono_literals;
+
 // -------------<Config>-----------
 
 int Config::preRead() {
@@ -94,30 +96,32 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
   }
 
   std::vector<std::string> ipVector;
-  std::string nslookup = "nslookup ";
-  nslookup +=
-      (host + " | grep -oE '\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b' > ip.md");
-  const char *command = const_cast<char *>(nslookup.c_str());
-  std::system(command);
+  std::string nslookup_exec = "nslookup ";
+  nslookup_exec += host;
 
-  std::ifstream f_ptr("ip.md");
-  if (f_ptr.bad()) {
-    std::cerr << "Error processing url in ip list" << std::endl;
-  }
+  boost::process::ipstream is;
+  boost::process::child ns_proc(nslookup_exec, boost::process::std_out > is);
+  ns_proc.wait();
 
-  int counter = 0;
-  while (!f_ptr.eof()) {
-    char buf[MAX_BUFFER_SIZE];
-    f_ptr.getline(buf, MAX_BUFFER_SIZE);
-    if (counter > 1) {
-      ipVector.push_back(std::string(buf));
+  std::string line;
+  bool skip = true;
+  while(std::getline(is, line)) {
+    if (line.find("Address:") != std::string::npos) {
+        if (skip) {
+            skip = false;
+            continue;
+        }
+
+        std::string ip;
+        for (int i = 8; i < int(line.size()); ++i) {
+            if (!isspace(line[i])) {
+                ip.push_back(line[i]);
+            }
+        }
+        if (ip.find(":") == std::string::npos) {
+            ipVector.push_back(ip);
+        }
     }
-
-    ++counter;
-  }
-
-  if (f_ptr.bad()) {
-    std::cerr << "Error processing url in ip list" << std::endl;
   }
 
   return ipVector;
@@ -152,9 +156,7 @@ Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
 
   command = const_cast<char *>(name.c_str());
   in << command << std::endl;
-  std::this_thread::sleep_for(5000ms);
-
-  c.terminate();
+  c.wait();
 
   std::string fileName = "/root/" + name + ".ovpn";
 
@@ -203,7 +205,6 @@ void MakeConfigurationFiles::DeleteClientConfig(std::string name) {
         raw.data(), raw.size());
     std::istream is(&sb);
     char number;
-    using namespace std::chrono_literals;
     std::this_thread::sleep_for(2000ms);
 
     com = "2";
@@ -220,10 +221,9 @@ void MakeConfigurationFiles::DeleteClientConfig(std::string name) {
     }
 
     in << number << std::endl;
-    std::this_thread::sleep_for(5000ms);
   }
 
-  c.terminate();
+  c.wait();
 }
 
 // -------------<OVPNRunner>-----------
@@ -260,6 +260,7 @@ int OVPNRunner::RunOpenVPNServerWithOptions(std::vector<std::string> ipList) {
 
   confFilesMaker.setMode(OPTIONAL);
   confFilesMaker.setState(RUNNING);
+  confFilesMaker.setIpList(ipList);
   clientConfig = confFilesMaker.MakeClientConfig(userName);
   return EXIT_SUCCESS;
 }
