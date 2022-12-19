@@ -53,6 +53,7 @@ ConfigWindow::ConfigWindow(QWidget *parent) :
     errorField->setStyleSheet("color: red; font-size: 16px;");
     layout->addWidget(errorField);
 
+
     connect(addBtn, &QPushButton::clicked, this, &ConfigWindow::addClicked);
     connect(clearBtn, &QPushButton::clicked, this, &ConfigWindow::clearClicked);
     connect(deleteBtn, &QPushButton::clicked, this, &ConfigWindow::deleteClicked);

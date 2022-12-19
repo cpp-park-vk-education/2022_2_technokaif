@@ -20,6 +20,11 @@ enum VPNMode {
     OPTIONAL
 };
 
+enum VPNServer {
+    NETHERLANDS,
+    RUSSIA
+};
+
 struct VPNContext {
     RunStatus state;
     VPNMode mode;

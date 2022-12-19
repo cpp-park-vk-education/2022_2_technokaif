@@ -11,6 +11,7 @@
 
 #include "homewindow.h"
 #include "configwindow.h"
+#include "countrywindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Base; }
@@ -28,15 +29,15 @@ class Base : public QWidget {
     // Switch windows
     void mainClicked();
     void configClicked();
-    void profileClicked();
+    void countryClicked();
 
     // BIG RUN BUTTON
     void runChanged(bool checked);
     void modeChanged(bool checked);
 
  private:
-    boost::asio::io_context context;  // ?
-    const std::string ip = "51.250.84.126";
+    boost::asio::io_context context;
+    const std::string ip = "188.227.84.52";
     const uint port = 2020;
 
     Client client;
@@ -55,11 +56,12 @@ class Base : public QWidget {
     QStackedWidget* pages;
     HomeWindow* homePage;
     ConfigWindow* configPage;
+    CountryWindow* countryPage;
 
     QHBoxLayout* footerBar;
     QPushButton* configBtn;
     QPushButton* mainBtn;
-    QPushButton* profileBtn;
+    QPushButton* countryBtn;
 };
 
 #endif  // _BASE_H_

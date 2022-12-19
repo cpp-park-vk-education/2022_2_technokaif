@@ -22,6 +22,7 @@ set(PROJECT_SOURCES
     src/gui/base.cpp
     src/gui/homewindow.cpp
     src/gui/configwindow.cpp
+    src/gui/countrywindow.cpp
     src/network/client.cpp
 
     include/tools/json.hpp
@@ -30,6 +31,7 @@ set(PROJECT_SOURCES
     include/gui/base.h
     include/gui/homewindow.h
     include/gui/configwindow.h
+    include/gui/countrywindow.h
     include/network/client.h
 )
 

@@ -10,6 +10,7 @@ Base::Base(QWidget *parent)
 
     // Common style
     setStyleSheet("background-image: url(\"../img/star-sky.jpg\"); color: white;");
+    // setStyleSheet("background-color: #171515; color: white;");
 
     setWindowTitle("Rabbit Hole");
     setWindowIcon(QIcon("img/rabbit.png"));
@@ -40,9 +41,11 @@ Base::Base(QWidget *parent)
     pages->setFixedSize(330, 480);
     homePage = new HomeWindow(this);
     configPage = new ConfigWindow(this);
+    countryPage = new CountryWindow(this);
 
     pages->insertWidget(0, homePage);
     pages->insertWidget(1, configPage);
+    pages->insertWidget(2, countryPage);
 
     layout->addWidget(pages);
 
@@ -58,29 +61,31 @@ Base::Base(QWidget *parent)
     mainBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(mainBtn);
 
-    profileBtn = new QPushButton("User", this);
-    profileBtn->setStyleSheet("height: 40px; font-size: 20px;");
-    profileBtn->setCursor(Qt::PointingHandCursor);
-    footerBar->addWidget(profileBtn);
+    countryBtn = new QPushButton("Country", this);
+    countryBtn->setStyleSheet("height: 40px; font-size: 20px;");
+    countryBtn->setCursor(Qt::PointingHandCursor);
+    footerBar->addWidget(countryBtn);
 
     layout->addItem(footerBar);
 
     connect(configBtn, &QPushButton::clicked, this, &Base::configClicked);
     connect(mainBtn, &QPushButton::clicked, this, &Base::mainClicked);
-    connect(profileBtn, &QPushButton::clicked, this, &Base::profileClicked);
+    connect(countryBtn, &QPushButton::clicked, this, &Base::countryClicked);
 
     connect(homePage->runBtn, &QCheckBox::toggled, this, &Base::runChanged);
     connect(homePage->modeBtn, &QCheckBox::toggled, this, &Base::modeChanged);
+
 }
 
 Base::~Base() {
-   delete profileBtn;
+   delete countryBtn;
    delete mainBtn;
    delete configBtn;
    delete footerBar;
 
-   delete configPage;  // 1
-   delete homePage;  // 2
+   delete countryPage;
+   delete configPage;
+   delete homePage;
    delete pages;
 
    delete appName;
@@ -98,7 +103,7 @@ void Base::configClicked() {
     pages->setCurrentIndex(1);
 }
 
-void Base::profileClicked() {
+void Base::countryClicked() {
     pages->setCurrentIndex(2);
 }
 
