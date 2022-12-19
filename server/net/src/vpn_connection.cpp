@@ -4,8 +4,7 @@
 #define IO_BIND(a) boost::bind(&VpnConnection::a, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
 
 VpnConnection::VpnConnection(boost::asio::io_context &io_context_) :
-// runner(OVPNRunner()),
-        handler(),  // Handler INIT
+        // handler(),  // Handler INIT
         socket_(io_context_) {}
 
 void VpnConnection::run(size_t *id) {
@@ -47,10 +46,13 @@ void VpnConnection::handleRead(const boost::system::error_code &error, size_t by
 }
 
 std::string VpnConnection::handleMsg(std::string vpnMsg) {
-    std::cout << "CLIENT MESSAGE : " << vpnMsg << std::endl;
-    // return "ANSWER\n";
-    handler.handle(vpnMsg);  // BLOCKING OPERATION
-    return handler.reply();
+    #ifdef OUTPUT
+        std::cout << "CLIENT MESSAGE : " << vpnMsg << std::endl;
+    #endif
+
+    return vpnMsg;
+    /* handler.handle(vpnMsg);  // BLOCKING OPERATION
+    return handler.reply(); */
 }
 
 void VpnConnection::sendReply() {
@@ -59,7 +61,9 @@ void VpnConnection::sendReply() {
 }
 
 void VpnConnection::closeConnection() {
-    std::cout << "CLIENT HAS EXITED\n";
+    #ifdef OUTPUT
+        std::cout << "CLIENT HAS EXITED\n";
+    #endif
     (*connections_)--;
     connections_ = nullptr;
     socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);

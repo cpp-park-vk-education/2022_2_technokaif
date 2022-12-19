@@ -3,12 +3,10 @@
 #include "vpn_connection.hpp"
 
 #include <boost/asio.hpp>
-// #include <boost/chrono.hpp>
 #include <boost/system.hpp>
 #include <boost/bind/bind.hpp>
 #include <memory>
 
-// using boost_error = const boost::system::error_code;
 static inline constexpr int default_port = 2020;
 
 class Server {

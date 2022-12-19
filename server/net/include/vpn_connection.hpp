@@ -1,23 +1,9 @@
 #pragma once
 
-#include <string>
-
 #include <boost/asio.hpp>
-// #include <boost/chrono.hpp>
-// #include <boost/system.hpp>
 #include <boost/bind/bind.hpp>
-// #include <sys/types.h>
-
+#include <string>
 #include <memory>
-
-// TODO ILYA
-class IHandler;
-// TODO ILYA
-
-// TODO ILYA
-class VpnMsgHandler {};
-// TODO ILYA
-
 
 static inline constexpr int BUFF_SIZE = 512;
 
@@ -50,8 +36,7 @@ private:
 
     void dummy(const boost::system::error_code &error, size_t bytes) {}
 
-    VpnMsgHandler handler;  // TODO
-    // OVPNRunner runner;
+    // VpnMsgHandler handler;
     char read_buff[BUFF_SIZE];
     std::string write_buff;
     boost::asio::ip::tcp::socket socket_;
