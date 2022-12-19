@@ -11,13 +11,18 @@
 
 
 enum RunStatus {
-    TOTAL,
-    OPTIONAL,
+    RUNNING,
     STOPPED
+};
+
+enum VPNMode {
+    TOTAL,
+    OPTIONAL
 };
 
 struct VPNContext {
     RunStatus state;
+    VPNMode mode;
     std::vector<std::string> urlList;
 };
 

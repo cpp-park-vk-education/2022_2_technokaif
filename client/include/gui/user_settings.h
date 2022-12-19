@@ -1,11 +1,12 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef _USERSETTINGS_H_
+#define _USERSETTINGS_H_
 
 #include "../user.h"
 #include "../tools/utils.h"
 
 #include <QWidget>
 #include <QPushButton>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -41,4 +42,4 @@ class UserSettings : public QWidget, public IUserSettings {
     VPNContext* context;
     std::vector<std::string> urlList;
 };
-#endif  // CONFIG_H
+#endif  // _USERSETTINGS_H_

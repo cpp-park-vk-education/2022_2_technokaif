@@ -4,11 +4,11 @@
 #include "../tools/utils.h"
 
 class OpenVPNClient {
-private:
+ private:
     const std::string _configFileName = "config.ovpn";
     int pid = -1;
 
-public:
+ public:
     ~OpenVPNClient();
 
     void updateConfig(const std::string& cfg);
@@ -18,7 +18,7 @@ public:
 };
 
 class Client {
-private:
+ private:
     boost::asio::posix::stream_descriptor _inputStream;
     boost::asio::ip::tcp::socket _socket;
 
@@ -28,13 +28,13 @@ private:
     OpenVPNClient _oVPNclient;
     VPNContext _context;
 
-public:
+ public:
     Client(boost::asio::io_context& context, std::string ip, unsigned int port);
     ~Client() {}
 
     void sendData();
     void getData();
-    void setVPNContext(RunStatus state, const std::vector<std::string>& urls);  // from console
+    void setVPNContext(RunStatus state, VPNMode mode, const std::vector<std::string>& urls);
     void connect();
     void stopConnection();
     bool isStateStop() { return _context.state == RunStatus::STOPPED; }

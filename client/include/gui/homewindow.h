@@ -1,5 +1,5 @@
-#ifndef HOMEWINDOW_H
-#define HOMEWINDOW_H
+#ifndef _HOMEWINDOW_H_
+#define _HOMEWINDOW_H_
 
 #include "../tools/utils.h"
 
@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QLabel>
+
 
 namespace Ui {
 class homeWindow;
@@ -20,18 +21,20 @@ class IHomeWidget {
 class HomeWindow : public QWidget, public IHomeWidget {
     Q_OBJECT
 
-public:
+ public:
     explicit HomeWindow(QWidget *parent = nullptr);
     ~HomeWindow();
 
     QCheckBox* runBtn;
     QCheckBox* modeBtn;
 
-private slots:
+    void setUserIp(std::string ip);
+
+ private slots:
     void runToggled(bool checked) override;
     void modeToggled(bool checked) override;
 
-private:
+ private:
     QVBoxLayout* layout;
 
     QHBoxLayout* runLayout;
@@ -47,4 +50,4 @@ private:
     QLabel* userIp;
 };
 
-#endif // HOMEWINDOW_H
+#endif  // _HOMEWINDOW_H_

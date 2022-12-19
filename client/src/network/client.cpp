@@ -8,15 +8,12 @@ using json = nlohmann::json;
 // ----------------------------- OpenVPNClient -------------------------------
 
 OpenVPNClient::~OpenVPNClient() {
-    // if (pid != 0) {
-    //     kill(pid, SIGKILL);
-    // }
     system("sudo killall openvpn");
 }
 
 void OpenVPNClient::updateConfig(const std::string& cfg) {
-    std::fstream out(_configFileName, std::ios_base::in | std::ios_base::out);
-    out.clear();
+    std::fstream out;
+    out.open(_configFileName, std::ios::out | std::ios::trunc);
     out << cfg;
     out.close();
 }
@@ -48,8 +45,9 @@ void Client::sendData() {
     json j;
 
     j["state"] = _context.state;
+    j["mode"] = _context.mode;
 
-    if (_context.state == RunStatus::OPTIONAL) {
+    if (_context.mode == VPNMode::OPTIONAL) {
         for (size_t i = 0; i < _context.urlList.size(); ++i) {
             j["urlList"].push_back(_context.urlList[i]);
         }
@@ -93,9 +91,9 @@ void Client::getData() {
 Client::Client(boost::asio::io_context& context, std::string ip, unsigned int port) :
     _inputStream(context, STDIN_FILENO), _socket(context), _ip(ip), _port(port) {}
 
-
-void Client::setVPNContext(RunStatus state, const std::vector<std::string>& urls) {
+void Client::setVPNContext(RunStatus state, VPNMode mode, const std::vector<std::string>& urls) {
     _context.state = state;
+    _context.mode = mode;
     _context.urlList = urls;
 }
 

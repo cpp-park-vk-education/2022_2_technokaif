@@ -41,4 +41,5 @@ class User : public IUser {
     std::string password;
     std::string email;
 };
+
 #endif  // _USER_H_

@@ -4,14 +4,21 @@
 Base::Base(QWidget *parent)
     : QWidget(parent), context(), client(context, ip, port) {
 
+    // Window size
     setFixedHeight(600);
     setFixedWidth(350);
 
+    // Common style
     setStyleSheet("background-image: url(\"../img/star-sky.jpg\"); color: white;");
 
+    setWindowTitle("Rabbit Hole");
+    setWindowIcon(QIcon("img/rabbit.png"));
+
+    // Common layout
     layout = new QVBoxLayout(this);
     layout->setSpacing(0);
     setLayout(layout);
+
 
     header = new QHBoxLayout(this);
     header->setAlignment(Qt::AlignLeft);
@@ -98,27 +105,34 @@ void Base::profileClicked() {
 void Base::runChanged(bool checked) {
     if (!checked) {
         state = RunStatus::STOPPED;
-        client.setVPNContext(state, std::vector<std::string>());
+
+        client.setVPNContext(state, mode, std::vector<std::string>());
         client.sendData();
         client.stopConnection();
+
+        homePage->setUserIp("Non-private");
     } else {
+        state = RunStatus::RUNNING;
+
         std::vector<std::string> urlList;
-        if (state == RunStatus::OPTIONAL) {
+        if (mode == VPNMode::OPTIONAL) {
             urlList = getUrlList();
         }
-        client.setVPNContext(state, urlList);
+        client.setVPNContext(state, mode, urlList);
 
         client.connect();
         client.sendData();
         client.getData();
+
+        homePage->setUserIp(ip);
     }
 }
 
 void Base::modeChanged(bool checked) {
     if (checked) {
-        state = RunStatus::OPTIONAL;
+        mode = VPNMode::OPTIONAL;
     } else {
-        state = RunStatus::TOTAL;
+        mode = VPNMode::TOTAL;
     }
 }
 

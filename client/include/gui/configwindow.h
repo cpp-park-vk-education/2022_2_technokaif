@@ -1,5 +1,5 @@
-#ifndef CONFIGWINDOW_H
-#define CONFIGWINDOW_H
+#ifndef _CONFIGWINDOW_H_
+#define _CONFIGWINDOW_H_
 
 #include "../tools/utils.h"
 
@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+
 
 namespace Ui {
 class ConfigWindow;
@@ -24,18 +25,18 @@ class IConfigWidget {
 class ConfigWindow : public QWidget, public IConfigWidget {
     Q_OBJECT
 
-public:
+ public:
     explicit ConfigWindow(QWidget *parent = nullptr);
     ~ConfigWindow();
 
     QListWidget* domainList;
 
-private slots:
+ private slots:
     void addClicked() override;
     void clearClicked() override;
     void deleteClicked() override;
 
-private:
+ private:
     QVBoxLayout* layout;
     QLabel* header;
 
@@ -50,4 +51,4 @@ private:
     QLabel* errorField;
 };
 
-#endif // CONFIGWINDOW_H
+#endif  // _CONFIGWINDOW_H_

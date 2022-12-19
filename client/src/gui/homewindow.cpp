@@ -53,10 +53,12 @@ HomeWindow::HomeWindow(QWidget *parent) :
     layout->addItem(modeLayout);
 
     ipLayout = new QHBoxLayout(this);
-    ipLabel = new QLabel("Your IP:", this);
+    ipLabel = new QLabel("Your IP: ", this);
     ipLabel->setStyleSheet("font-size: 22px; background: transparent;");
+    ipLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     userIp = new QLabel(this);
     userIp->setStyleSheet("font-size: 18px; font-weight: 600; background: transparent;");
+    userIp->setText("Non-private");
 
     ipLayout->addWidget(ipLabel);
     ipLayout->addWidget(userIp);
@@ -80,7 +82,6 @@ HomeWindow::~HomeWindow() {
    delete statusLayout;
    delete runBtn;
 
-
    delete runLayout;
    delete layout;
 }
@@ -95,4 +96,8 @@ void HomeWindow::runToggled(bool checked) {
 
 void HomeWindow::modeToggled(bool checked) {
     return;
+}
+
+void HomeWindow::setUserIp(std::string ip) {
+    userIp->setText(QString::fromStdString(ip));
 }
