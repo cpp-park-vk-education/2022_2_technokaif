@@ -1,0 +1,30 @@
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    steps:
+      - uses: actions/checkout@v2 
+      - run: make check
+
+  build:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    needs: [check]
+    steps:
+    - uses: actions/checkout@v2 
+    - run: make build
+
+
+  memtest:
+    runs-on: ubuntu-latest
+    container: stepanpopov/rabbit_hole
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - run: make memtest
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./server/build/report
