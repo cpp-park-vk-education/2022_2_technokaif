@@ -5,7 +5,9 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <chrono>
+#include <thread>
+#include <boost/process.hpp>
 #include <boost/asio.hpp>
 #include "json.hpp"
 
@@ -29,6 +31,11 @@ struct VPNContext {
     RunStatus state;
     VPNMode mode;
     std::vector<std::string> urlList;
+};
+
+struct OptionalUrl {
+    std::string url;
+    std::vector<std::string> ipList;
 };
 
 #endif  // _UTILS_H_

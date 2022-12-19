@@ -3,6 +3,16 @@
 
 #include "../tools/utils.h"
 
+class UrlToIpConverter {
+public:
+    void runConvert(std::vector<std::string> urlList);
+    std::vector<std::string> getIpList();
+
+private:
+    std::vector<std::string> ipList;
+    std::vector<std::string> nsRequest(std::string url);
+};
+
 class OpenVPNClient {
  private:
     const std::string _configFileName = "config.ovpn";
