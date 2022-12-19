@@ -17,7 +17,7 @@ enum RunStatus {
 struct VPNContext {
     VPNMode mode;
     RunStatus state;
-    std::vector<std::string> urlList;
+    std::vector<std::string> ipList;
 };
 
 /* example

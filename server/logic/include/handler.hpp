@@ -15,12 +15,8 @@
 #include <thread>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream_buffer.hpp>
-// #include <boost/log.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <string>
-
-// using boost::filesystem;
-// namespace json = nlohman::json;
 
 const int MAX_BUFFER_SIZE = 100;
 
@@ -45,18 +41,6 @@ class IHandler {
 public:
     virtual void handle(std::string ) = 0;
     virtual std::string reply() = 0;
-};
-
-class UrlToIpConverter {
-public:    
-    std::vector<OptionalUrl> getOptionalUrlList(VPNContext vpnContext_);
-
-private:
-    void runConvert();
-    std::vector<OptionalUrl> vpnList;
-    VPNContext vpnContext;
-
-    std::vector<std::string> nsRequest(std::string url);
 };
 
 class MakeConfigurationFiles {
@@ -92,7 +76,6 @@ private:
 
 class VpnMsgHandler : public IHandler {
 public:
-    // explicit VpnMsgHandler(OVPNRunner& runner) : ovpnRunner(runner) { }
     void handle(std::string ) override;
     std::string reply() override;
 
@@ -101,16 +84,12 @@ private:
     void logic();
     void generateName();
 
-    void convertVpnListToIpList();
     void convertVpnMsgToVpnContext(std::string );
-    void convertVpnContextToVpnList();
     void setVpnContext(const VPNContext& );
     void setVpnList(const std::vector<OptionalUrl>& );
 
 private:
     VPNContext _vpnContext;
-    std::vector<OptionalUrl> _vpnList;
     std::vector<std::string> _ipList;
-    UrlToIpConverter urlConverter;
     OVPNRunner ovpnRunner;
 };

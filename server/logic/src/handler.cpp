@@ -69,74 +69,6 @@ int Config::writeIpList(const std::string &ipList) {
   return EXIT_SUCCESS;
 }
 
-// -------------<UrlToIpConverter>-----------
-
-void UrlToIpConverter::runConvert() {
-  // TODO(Ilya): метод, реализующий конвертацию url ссылок в ip лист
-  
-  if (vpnContext.state != RUNNING || vpnContext.mode != OPTIONAL) {
-    return;
-  }
-
-  for (const auto &url : vpnContext.urlList) {
-    this->vpnList.push_back({url, nsRequest(url)});
-  }
-}
-
-std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
-  // TODO(Ilya): метод, запрашивающий по url ip лист
-
-  std::string host;
-  const std::string header = "https://";
-  int pos = url.find(header);
-  if (pos == 0) {
-    host = url.substr(header.size());
-  } else {
-    host = url;
-  }
-
-  std::vector<std::string> ipVector;
-  std::string nslookup_exec = "nslookup ";
-  nslookup_exec += host;
-
-  boost::process::ipstream is;
-  boost::process::child ns_proc(nslookup_exec, boost::process::std_out > is);
-  ns_proc.wait();
-
-  std::string line;
-  bool skip = true;
-  while(std::getline(is, line)) {
-    if (line.find("Address:") != std::string::npos) {
-        if (skip) {
-            skip = false;
-            continue;
-        }
-
-        std::string ip;
-        for (int i = 8; i < int(line.size()); ++i) {
-            if (!isspace(line[i])) {
-                ip.push_back(line[i]);
-            }
-        }
-        if (ip.find(":") == std::string::npos) {
-            ipVector.push_back(ip);
-        }
-    }
-  }
-
-  return ipVector;
-}
-
-std::vector<OptionalUrl>
-UrlToIpConverter::getOptionalUrlList(VPNContext vpnContext_) {
-  // TODO(Ilya): метод, возвращающий вектор структур из ip листа и url
-  // (т.е структуру со всеми необходимыми данными)
-
-  vpnContext = vpnContext_;
-  runConvert();
-  return vpnList;
-}
-
 // -------------<MakeConfigurationFiles>-----------
 
 Config *MakeConfigurationFiles::MakeClientConfig(std::string name) {
@@ -300,21 +232,10 @@ void VpnMsgHandler::inputAnalyze(std::string msgBuffer) {
   // TODO(Ilya): разработка входных данных на сервер
 
   convertVpnMsgToVpnContext(msgBuffer);
-  convertVpnContextToVpnList();
-  convertVpnListToIpList();
+  //convertVpnContextToVpnList();
+  //convertVpnListToIpList();
+  _ipList = _vpnContext.ipList;
   logic();
-}
-
-void VpnMsgHandler::convertVpnListToIpList() {
-  if (_vpnContext.state != RUNNING || _vpnContext.mode != OPTIONAL) {
-    return;
-  }
-
-  for (auto ipL : this->_vpnList) {
-    for (auto ip : ipL.ipList) {
-      _ipList.push_back(ip);
-    }
-  }
 }
 
 void VpnMsgHandler::logic() {
@@ -331,10 +252,6 @@ void VpnMsgHandler::setVpnContext(const VPNContext &vpnContext_) {
   this->_vpnContext = vpnContext_;
 }
 
-void VpnMsgHandler::setVpnList(const std::vector<OptionalUrl> &vpnList_) {
-  this->_vpnList = vpnList_;
-}
-
 void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg) {
   // TODO(Ilya): метод конвертации буфера с сервера в VPNContext
 
@@ -342,19 +259,8 @@ void VpnMsgHandler::convertVpnMsgToVpnContext(std::string vpnMsg) {
   _vpnContext.mode = j["mode"].get<VPNMode>();
   _vpnContext.state = j["state"].get<RunStatus>();
   if (_vpnContext.state == RUNNING && _vpnContext.mode == OPTIONAL) {
-    j["urlList"].get_to<std::vector<std::string>>(_vpnContext.urlList);
+    j["ipList"].get_to<std::vector<std::string>>(_vpnContext.ipList);
   }
-}
-
-void VpnMsgHandler::convertVpnContextToVpnList() {
-  // TODO(Ilya): метод конвертации VPNContext в вектор наборов из url и Ip
-  // листов
-
-  if (_vpnContext.state != RUNNING || _vpnContext.mode != OPTIONAL) {
-    return;
-  } 
-
-  _vpnList = urlConverter.getOptionalUrlList(_vpnContext);
 }
 
 int main() {
@@ -365,7 +271,7 @@ int main() {
 
   j["mode"] = context1.mode;
   j["state"] = context1.state;
-  j["urlList"] = context1.urlList;
+  j["ipList"] = context1.ipList;
   std::string input = j.dump();
   VpnMsgHandler handler;
   handler.handle(input);
@@ -375,7 +281,7 @@ int main() {
 
   j["mode"] = context1.mode;
   j["state"] = context2.state;
-  j["urlList"] = context2.urlList;
+  j["ipList"] = context2.ipList;
   input = j.dump();
   handler.handle(input);
 
