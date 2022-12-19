@@ -1,0 +1,16 @@
+# Cmake
+*/build
+*/**/build
+
+# Executables
+*.exe
+*.out
+*.app
+
+#IDE
+.idea
+.vscode
+
+# Logs
+*.log
+/server/logic/src/*.md
