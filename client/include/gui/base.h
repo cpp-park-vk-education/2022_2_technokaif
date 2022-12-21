@@ -26,19 +26,21 @@ class Base : public QWidget {
     ~Base();
 
  private slots:
-    // Switch windows
+    // Switch page
     void mainClicked();
     void configClicked();
     void countryClicked();
 
-    // BIG RUN BUTTON
     void runChanged(bool checked);
     void modeChanged(bool checked);
 
+    void rusClicked();
+    void nlClicked();
+
  private:
     boost::asio::io_context context;
-    const std::string ip = "188.227.84.52";
-    const uint port = 2020;
+    std::string ip = "51.250.84.126";
+    uint port = 2020;
 
     Client client;
 

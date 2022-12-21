@@ -185,3 +185,8 @@ void Client::stopConnection() {
 
     std::cout << "connection close" << std::endl;
 }
+
+void Client::setEndpoint(std::string ip, uint port) {
+    _ip = ip;
+    _port = port;
+}

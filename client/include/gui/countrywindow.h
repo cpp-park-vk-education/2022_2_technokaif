@@ -15,8 +15,8 @@ class CountryWindow;
 
 class ICountryWindow {
  public:
-    virtual void netherlandsClicked() = 0;
-    virtual void russiaClicked() = 0;
+    virtual void nlClicked() = 0;
+    virtual void rusClicked() = 0;
 };
 
 class CountryWindow : public QWidget, public ICountryWindow {
@@ -26,10 +26,12 @@ class CountryWindow : public QWidget, public ICountryWindow {
     explicit CountryWindow(QWidget *parent = nullptr);
     ~CountryWindow();
 
+    QPushButton* nlBtn;
+    QPushButton* rusBtn;
 
  private slots:
-    void netherlandsClicked() override;
-    void russiaClicked() override;
+    void nlClicked() override;
+    void rusClicked() override;
 
  private:
     VPNServer server = VPNServer::NETHERLANDS;
@@ -38,9 +40,7 @@ class CountryWindow : public QWidget, public ICountryWindow {
 
     QLabel* header;
 
-    QPushButton* netherlandsBtn;
     QLabel* amsterdamLabel;
-    QPushButton* russiaBtn;
     QLabel* moscowLabel;
 
     QLabel* soon;

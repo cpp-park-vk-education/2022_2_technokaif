@@ -1,8 +1,10 @@
 #include "../../include/gui/base.h"
 
 
-Base::Base(QWidget *parent)
-    : QWidget(parent), context(), client(context, ip, port) {
+Base::Base(QWidget *parent) :
+    QWidget(parent),
+    context(),
+    client(context, ip, port) {
 
     // Window size
     setFixedHeight(600);
@@ -10,7 +12,6 @@ Base::Base(QWidget *parent)
 
     // Common style
     setStyleSheet("background-image: url(\"../img/star-sky.jpg\"); color: white;");
-    // setStyleSheet("background-color: #171515; color: white;");
 
     setWindowTitle("Rabbit Hole");
     setWindowIcon(QIcon("img/rabbit.png"));
@@ -61,8 +62,8 @@ Base::Base(QWidget *parent)
     mainBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(mainBtn);
 
-    countryBtn = new QPushButton("Country", this);
-    countryBtn->setStyleSheet("height: 40px; font-size: 20px;");
+    countryBtn = new QPushButton(this);
+    countryBtn->setStyleSheet("height: 40px; font-size: 20px; image: url(\"../img/russia.png\");");
     countryBtn->setCursor(Qt::PointingHandCursor);
     footerBar->addWidget(countryBtn);
 
@@ -71,6 +72,9 @@ Base::Base(QWidget *parent)
     connect(configBtn, &QPushButton::clicked, this, &Base::configClicked);
     connect(mainBtn, &QPushButton::clicked, this, &Base::mainClicked);
     connect(countryBtn, &QPushButton::clicked, this, &Base::countryClicked);
+
+    connect(countryPage->rusBtn, &QPushButton::clicked, this, &Base::rusClicked);
+    connect(countryPage->nlBtn, &QPushButton::clicked, this, &Base::nlClicked);
 
     connect(homePage->runBtn, &QCheckBox::toggled, this, &Base::runChanged);
     connect(homePage->modeBtn, &QCheckBox::toggled, this, &Base::modeChanged);
@@ -105,6 +109,24 @@ void Base::configClicked() {
 
 void Base::countryClicked() {
     pages->setCurrentIndex(2);
+}
+
+void Base::rusClicked() {
+    countryBtn->setStyleSheet("height: 40px; font-size: 20px; image: url(\"../img/russia.png\");");
+
+    ip = "51.250.84.126";
+    port = 2020;
+
+    client.setEndpoint(ip, port);
+}
+
+void Base::nlClicked() {
+    countryBtn->setStyleSheet("height: 40px; font-size: 20px; image: url(\"../img/netherlands.png\");");
+
+    ip = "188.227.84.52";
+    port = 2020;
+
+    client.setEndpoint(ip, port);
 }
 
 void Base::runChanged(bool checked) {

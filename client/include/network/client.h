@@ -33,14 +33,16 @@ class Client {
     boost::asio::ip::tcp::socket _socket;
 
     std::string _ip = "127.0.0.1";
-    unsigned int _port = 80;
+    uint _port = 80;
 
     OpenVPNClient _oVPNclient;
     VPNContext _context;
 
  public:
-    Client(boost::asio::io_context& context, std::string ip, unsigned int port);
+    Client(boost::asio::io_context& context, std::string ip, uint port);
     ~Client() {}
+
+    void setEndpoint(std::string ip, uint port);
 
     void sendData();
     void getData();

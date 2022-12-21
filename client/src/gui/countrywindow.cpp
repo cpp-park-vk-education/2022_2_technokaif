@@ -1,7 +1,8 @@
 #include "../../include/gui/countrywindow.h"
 
 
-CountryWindow::CountryWindow(QWidget *parent) : QWidget(parent) {
+CountryWindow::CountryWindow(QWidget *parent) :
+    QWidget(parent) {
     
     setFixedHeight(480);
     setFixedWidth(330);
@@ -16,13 +17,13 @@ CountryWindow::CountryWindow(QWidget *parent) : QWidget(parent) {
     header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);;
     layout->addWidget(header);
 
-    netherlandsBtn = new QPushButton(this);
-    netherlandsBtn->setCursor(Qt::PointingHandCursor);
-    netherlandsBtn->setFixedWidth(73);
-    netherlandsBtn->setFixedHeight(50);
-    netherlandsBtn->setStyleSheet("image: url(\"../img/netherlands.png\");");
-    netherlandsBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-    layout->addWidget(netherlandsBtn);
+    nlBtn = new QPushButton(this);
+    nlBtn->setCursor(Qt::PointingHandCursor);
+    nlBtn->setFixedWidth(73);
+    nlBtn->setFixedHeight(50);
+    nlBtn->setStyleSheet("image: url(\"../img/netherlands.png\");");
+    nlBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    layout->addWidget(nlBtn);
 
     amsterdamLabel = new QLabel("Amsterdam", this);
     amsterdamLabel->setStyleSheet("font-size: 16px; background: transparent;");
@@ -30,13 +31,13 @@ CountryWindow::CountryWindow(QWidget *parent) : QWidget(parent) {
     amsterdamLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     layout->addWidget(amsterdamLabel);
 
-    russiaBtn = new QPushButton(this);
-    russiaBtn->setCursor(Qt::PointingHandCursor);
-    russiaBtn->setFixedWidth(73);
-    russiaBtn->setFixedHeight(50);
-    russiaBtn->setStyleSheet("image: url(\"../img/russia.png\");");
-    russiaBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-    layout->addWidget(russiaBtn);
+    rusBtn = new QPushButton(this);
+    rusBtn->setCursor(Qt::PointingHandCursor);
+    rusBtn->setFixedWidth(73);
+    rusBtn->setFixedHeight(50);
+    rusBtn->setStyleSheet("image: url(\"../img/russia.png\");");
+    rusBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    layout->addWidget(rusBtn);
 
     moscowLabel = new QLabel("Moscow", this);
     moscowLabel->setStyleSheet("font-size: 16px; background: transparent;");
@@ -48,28 +49,27 @@ CountryWindow::CountryWindow(QWidget *parent) : QWidget(parent) {
     soon->setStyleSheet("font-size: 16px; background: transparent;");
     layout->addWidget(soon);
 
-
-    connect(netherlandsBtn, &QPushButton::clicked, this, &CountryWindow::netherlandsClicked);
-    connect(russiaBtn, &QPushButton::clicked, this, &CountryWindow::russiaClicked);
+    connect(nlBtn, &QPushButton::clicked, this, &CountryWindow::nlClicked);
+    connect(rusBtn, &QPushButton::clicked, this, &CountryWindow::rusClicked);
 }
 
 CountryWindow::~CountryWindow() {
     delete soon;
 
     delete moscowLabel;
-    delete russiaBtn;
+    delete rusBtn;
     delete amsterdamLabel;
-    delete netherlandsBtn;
+    delete nlBtn;
 
     delete header;
 
     delete layout;
 }
 
-void CountryWindow::netherlandsClicked() {
+void CountryWindow::nlClicked() {
     server = VPNServer::NETHERLANDS;
 }
 
-void CountryWindow::russiaClicked() {
+void CountryWindow::rusClicked() {
     server = VPNServer::RUSSIA;
 }
