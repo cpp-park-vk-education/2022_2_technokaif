@@ -111,7 +111,7 @@ void Base::countryClicked() {
 void Base::rusClicked() {
     countryBtn->setStyleSheet("height: 40px; font-size: 20px; image: url(\"../img/russia.png\");");
 
-    ip = "51.250.84.126";
+    ip = "51.250.1.154";
     port = 2020;
 
     client.setEndpoint(ip, port);
