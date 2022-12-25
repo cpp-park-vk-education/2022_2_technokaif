@@ -13,9 +13,6 @@ Base::Base(QWidget *parent) :
     // Common style
     setStyleSheet("background-image: url(\"../img/star-sky.jpg\"); color: white;");
 
-    setWindowTitle("Rabbit Hole");
-    setWindowIcon(QIcon("img/rabbit.png"));
-
     // Common layout
     layout = new QVBoxLayout(this);
     layout->setSpacing(0);
