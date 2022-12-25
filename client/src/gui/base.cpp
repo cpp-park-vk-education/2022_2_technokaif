@@ -144,7 +144,16 @@ void Base::runChanged(bool checked) {
         }
         client.setVPNContext(state, mode, urlList);
 
-        client.connect();
+        try {
+            client.connect();
+        }
+        catch(boost::wrapexcept<boost::system::system_error> &e) {
+            std::cout << e.what() << std::endl;
+            homePage->vpnStatus->setText("VPN OFF");
+            homePage->runBtn->setCheckState(Qt::Unchecked);
+            homePage->setUserIp("Non-private");
+        }
+
         client.sendData();
         client.getData();
 
