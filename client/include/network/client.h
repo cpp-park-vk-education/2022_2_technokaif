@@ -1,5 +1,5 @@
-#ifndef _CLIENT_H_
-#define _CLIENT_H_
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "../tools/utils.h"
 
@@ -16,9 +16,14 @@ private:
 class OpenVPNClient {
  private:
     const std::string _configFileName = "config.ovpn";
-    int pid = -1;
+    std::string pwd;
+    std::string openvpn_path;
+    // int pid = -1;
+
+    boost::process::child openvpn;
 
  public:
+    OpenVPNClient();
     ~OpenVPNClient();
 
     void updateConfig(const std::string& cfg);
@@ -52,4 +57,4 @@ class Client {
     bool isStateStop() { return _context.state == RunStatus::STOPPED; }
 };
 
-#endif  // _CLIENT_H_
+#endif  // CLIENT_H

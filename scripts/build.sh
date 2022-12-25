@@ -14,6 +14,8 @@ mkdir build
 cd build
 
 touch config.ovpn
+pwd > pwd.txt
+which openvpn > openvpn-path.txt
 g++ ../run-openvpn.cpp -g -o run-openvpn
 
 cmake "$@" ..

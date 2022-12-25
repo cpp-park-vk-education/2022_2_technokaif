@@ -7,8 +7,20 @@ using json = nlohmann::json;
 
 // ----------------------------- OpenVPNClient -------------------------------
 
+OpenVPNClient::OpenVPNClient() {
+    std::ifstream f1("pwd.txt");
+    f1 >> pwd;
+
+    std::ifstream f2("openvpn-path.txt");
+    f2 >> openvpn_path;
+
+    f1.close();
+    f2.close();
+}
+
 OpenVPNClient::~OpenVPNClient() {
-    system("sudo killall openvpn");
+    // system("sudo killall openvpn");
+    openvpn.terminate();
 }
 
 void OpenVPNClient::updateConfig(const std::string& cfg) {
@@ -19,30 +31,17 @@ void OpenVPNClient::updateConfig(const std::string& cfg) {
 }
 
 void OpenVPNClient::runOpenVPN() {
-    if (pid != -1) {
-        kill(pid, SIGKILL);
-    }
-
-    pid = fork();
-    if (pid == 0) {
-        pid = execl("./run-openvpn", "./run-openvpn", NULL);
-    }
-
-    std::cout << "pid = " << pid << std::endl;
+    openvpn = boost::process::child(openvpn_path, pwd + std::string("/") + _configFileName, boost::process::std_out > "log.txt");
 }
 
 void OpenVPNClient::stopOpenVPN()  {
-    // if (pid != 0) {
-    //     kill(pid, SIGKILL);
-    // }
-    system("sudo killall openvpn");
+    // system("sudo killall openvpn");
+    openvpn.terminate();
 }
 
 // ----------------------------- UrlToIpConverter -------------------------------
 
 std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
-  // TODO(Ilya): метод, запрашивающий по url ip лист
-
   std::string host;
   const std::string header = "https://";
   int pos = url.find(header);
@@ -85,8 +84,6 @@ std::vector<std::string> UrlToIpConverter::nsRequest(std::string url) {
 }
 
 void UrlToIpConverter::runConvert(std::vector<std::string> urlList) {
-  // TODO(Ilya): метод, реализующий конвертацию url ссылок в ip лист
-
   for (const auto &url : urlList) {
     std::vector<std::string> urlIpList = nsRequest(url);
     for (auto ip : urlIpList) {
@@ -97,9 +94,6 @@ void UrlToIpConverter::runConvert(std::vector<std::string> urlList) {
 
 std::vector<std::string>
 UrlToIpConverter::getIpList() {
-  // TODO(Ilya): метод, возвращающий вектор структур из ip листа и url
-  // (т.е структуру со всеми необходимыми данными)
-
   return ipList;
 }
 
