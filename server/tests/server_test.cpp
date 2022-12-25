@@ -9,7 +9,7 @@
 
 #define PORT 2020
 
-TEST(ServerTest, NetcatMessageTwoClients) {
+TEST(ServerTest, DISABLED_Test1) {
     boost::asio::io_context context;
     Server server(context, PORT);
     server.start();
@@ -86,7 +86,7 @@ public:
     }
 };
 
-TEST(ServerTest, ClientMessageSyncClients) {
+TEST(ServerTest, DISABLED_Test2) {
     int clients_num = 1000;
 
     boost::asio::io_context server_context;

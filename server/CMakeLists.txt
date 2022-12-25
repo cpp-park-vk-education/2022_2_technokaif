@@ -15,7 +15,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LOGIC_LIBRARIES} ${NET_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${NET_LIBRARIES})
 
 enable_testing()
 add_subdirectory(tests)

@@ -4,7 +4,7 @@
 #define IO_BIND(a) boost::bind(&VpnConnection::a, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
 
 VpnConnection::VpnConnection(boost::asio::io_context &io_context_) :
-        // handler(),  // Handler INIT
+        handler(),  // Handler INIT
         socket_(io_context_) {}
 
 void VpnConnection::run(size_t *id) {
@@ -50,9 +50,9 @@ std::string VpnConnection::handleMsg(std::string vpnMsg) {
         std::cout << "CLIENT MESSAGE : " << vpnMsg << std::endl;
     #endif
 
-    return vpnMsg;
-    /* handler.handle(vpnMsg);  // BLOCKING OPERATION
-    return handler.reply(); */
+    // return vpnMsg;
+    handler.handle(vpnMsg);  // BLOCKING OPERATION
+    return handler.reply();
 }
 
 void VpnConnection::sendReply() {

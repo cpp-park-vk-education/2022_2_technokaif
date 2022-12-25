@@ -5,14 +5,19 @@
 #include <string>
 
 enum VPNMode {
-    runTotal,
-    runOptional,
-    stopped
+    TOTAL,
+    OPTIONAL
+};
+
+enum RunStatus {
+    RUNNING,
+    STOPPED
 };
 
 struct VPNContext {
-    VPNMode state;
-    std::vector<std::string> urlList; 
+    VPNMode mode;
+    RunStatus state;
+    std::vector<std::string> ipList;
 };
 
 struct OptionalUrl {

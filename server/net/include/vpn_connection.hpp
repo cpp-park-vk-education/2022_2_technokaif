@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 
+#include "handler.hpp"
+
 static inline constexpr int BUFF_SIZE = 512;
 
 class VpnConnection : public std::enable_shared_from_this<VpnConnection> {
@@ -36,7 +38,7 @@ private:
 
     void dummy(const boost::system::error_code &error, size_t bytes) {}
 
-    // VpnMsgHandler handler;
+    VpnMsgHandler handler;
     char read_buff[BUFF_SIZE];
     std::string write_buff;
     boost::asio::ip::tcp::socket socket_;
