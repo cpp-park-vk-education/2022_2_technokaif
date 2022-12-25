@@ -166,10 +166,6 @@ void Client::setVPNContext(RunStatus state, VPNMode mode, const std::vector<std:
 }
 
 void Client::connect() {
-    if (_socket.is_open()) {
-        _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-        _socket.close();
-    }
     boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string(_ip), _port);
 
     _socket.connect(ep);

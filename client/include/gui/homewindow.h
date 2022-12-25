@@ -27,6 +27,9 @@ class HomeWindow : public QWidget, public IHomeWidget {
 
     QCheckBox* runBtn;
     QCheckBox* modeBtn;
+    QLabel* vpnStatus;
+
+    QLabel* errorField;
 
     void setUserIp(std::string ip);
 
@@ -39,7 +42,8 @@ class HomeWindow : public QWidget, public IHomeWidget {
 
     QHBoxLayout* runLayout;
     QHBoxLayout* statusLayout;
-    QLabel* vpnStatus;
+    
+    QHBoxLayout* errorLayout;
 
     QHBoxLayout* modeLayout;
     QLabel* lazyMode;

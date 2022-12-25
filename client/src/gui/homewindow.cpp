@@ -22,6 +22,14 @@ HomeWindow::HomeWindow(QWidget *parent) :
     runLayout->addWidget(runBtn);
     layout->addItem(runLayout);
 
+    errorLayout = new QHBoxLayout(this);
+
+    errorField = new QLabel(this);
+    errorField->setStyleSheet("color: red; font-size: 16px; background: transparent;");
+    errorField->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    errorLayout->addWidget(errorField);
+    layout->addItem(errorLayout);
+
     statusLayout = new QHBoxLayout(this);
 
     vpnStatus = new QLabel("VPN OFF", this);
@@ -77,6 +85,9 @@ HomeWindow::~HomeWindow() {
    delete modeBtn;
    delete fullMode;
    delete modeLayout;
+
+   delete errorField;
+   delete errorLayout;
 
    delete vpnStatus;
    delete statusLayout;

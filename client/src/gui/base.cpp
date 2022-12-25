@@ -131,12 +131,18 @@ void Base::runChanged(bool checked) {
         state = RunStatus::STOPPED;
 
         client.setVPNContext(state, mode, std::vector<std::string>());
-        client.sendData();
-        client.stopConnection();
-
+        try {
+            client.sendData();
+            client.stopConnection();
+        }
+        catch(...) {
+            return;
+        }
         homePage->setUserIp("Non-private");
     } else {
         state = RunStatus::RUNNING;
+
+        homePage->errorField->setText("");
 
         std::vector<std::string> urlList;
         if (mode == VPNMode::OPTIONAL) {
@@ -149,14 +155,16 @@ void Base::runChanged(bool checked) {
         }
         catch(boost::wrapexcept<boost::system::system_error> &e) {
             std::cout << e.what() << std::endl;
+            homePage->errorField->setText("Server is busy");
             homePage->vpnStatus->setText("VPN OFF");
             homePage->runBtn->setCheckState(Qt::Unchecked);
             homePage->setUserIp("Non-private");
+
+            return;
         }
 
         client.sendData();
         client.getData();
-
         homePage->setUserIp(ip);
     }
 }
