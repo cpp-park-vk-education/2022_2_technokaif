@@ -131,9 +131,13 @@ void Base::runChanged(bool checked) {
         state = RunStatus::STOPPED;
 
         client.setVPNContext(state, mode, std::vector<std::string>());
-        client.sendData();
-        client.stopConnection();
-
+        try {
+            client.sendData();
+            client.stopConnection();
+        }
+        catch(...) {
+            return;
+        }
         homePage->setUserIp("Non-private");
     } else {
         state = RunStatus::RUNNING;
@@ -144,10 +148,17 @@ void Base::runChanged(bool checked) {
         }
         client.setVPNContext(state, mode, urlList);
 
-        client.connect();
+        try {
+            client.connect();
+        }
+        catch( const boost::wrapexcept<boost::system::system_error> &e) {
+            homePage->runBtn->setCheckState(Qt::Unchecked);
+            
+            return;
+        }
+
         client.sendData();
         client.getData();
-
         homePage->setUserIp(ip);
     }
 }
