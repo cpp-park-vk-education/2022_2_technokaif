@@ -39,7 +39,7 @@ class Base : public QWidget {
 
  private:
     boost::asio::io_context context;
-    std::string ip = "51.250.84.126";
+    std::string ip = "51.250.1.154";
     uint port = 2020;
 
     Client client;
